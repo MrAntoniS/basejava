@@ -15,13 +15,14 @@ public class ArrayStorage {
             }
         }
         Arrays.fill(storage, 0, i, null);
-
+        size = 0;
     }
 
     void save(Resume resume) {
         for (int i = 0; i < storage.length; i++) {
             if (storage[i] == null) {
                 storage[i] = resume;
+                size = i + 1;
                 break;
             }
         }
@@ -62,12 +63,6 @@ public class ArrayStorage {
     }
 
     int size() {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                break;
-            }
-            size = i + 1;
-        }
         return size;
     }
 }
