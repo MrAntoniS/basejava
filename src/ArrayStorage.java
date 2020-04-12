@@ -16,7 +16,7 @@ public class ArrayStorage {
         for (int i = 0; i < storage.length; i++) {
             if (storage[i] == null) {
                 storage[i] = resume;
-                size = size + 1;
+                size++;
                 break;
             }
         }
