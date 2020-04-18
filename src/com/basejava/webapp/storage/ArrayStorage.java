@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private Resume[] storage = new Resume[10_000];
     private int size;
 
     public void clear() {
@@ -18,60 +18,64 @@ public class ArrayStorage {
 
     public void update(Resume resume) {
         String uuid = resume.getUuid();
-        checkPresentOfResume(uuid);
-        for (int i = 0; i < size; i++) {
-            if (storage[i] == resume) {
-                storage[i] = resume;
-                break;
+        if (checkPresentOfResume(uuid)) {
+            for (int i = 0; i < size; i++) {
+                if (storage[i].getUuid().equals(uuid)) {
+                    storage[i] = null;
+                    storage[i] = resume;
+                    break;
+                }
             }
         }
     }
 
     public void save(Resume resume) {
         String uuid = resume.getUuid();
-        checkPresentOfResume(uuid);
-        if (size == storage.length) {
-            System.out.println("No storage");
-        } else {
-            storage[size] = resume;
-            size++;
+        if (!checkPresentOfResume(uuid)) {
+            System.out.println("Resume is not present");
+            if (size == storage.length) {
+                System.out.println("No storage");
+            } else {
+                storage[size] = resume;
+                size++;
+            }
         }
     }
 
     public Resume get(String uuid) {
-        checkPresentOfResume(uuid);
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return storage[i];
+        if (checkPresentOfResume(uuid)) {
+            for (int i = 0; i < size; i++) {
+                if (storage[i].getUuid().equals(uuid)) {
+                    return storage[i];
+                }
             }
         }
         return null;
     }
 
     public void delete(String uuid) {
-        checkPresentOfResume(uuid);
-        for (int i = 0; i < size; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                storage[i].setUuid(null);
-                if (size - 1 - i >= 0) {
-                    System.arraycopy(storage, i + 1, storage, i, size - i - 1);
+        if (checkPresentOfResume(uuid)) {
+            for (int i = 0; i < size; i++) {
+                if (storage[i].getUuid().equals(uuid)) {
+                    storage[i].setUuid(null);
+                    if (size - 1 - i >= 0) {
+                        System.arraycopy(storage, i + 1, storage, i, size - i - 1);
+                    }
+                    size--;
+                    break;
                 }
-                size--;
-                break;
             }
         }
     }
 
-    private void checkPresentOfResume(String uuid) {
-        for (Resume value : storage) {
-            if (value != null && value.getUuid().equals(uuid)) {
+    private boolean checkPresentOfResume(String uuid) {
+        for (int i = 0; i < storage.length; i++) {
+            if (storage[i].getUuid().equals(uuid)) {
                 System.out.println("Resume is present");
-                break;
-            } else if (value == null) {
-                System.out.println("Resume is not present");
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     /**
