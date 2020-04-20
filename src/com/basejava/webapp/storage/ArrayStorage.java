@@ -17,8 +17,9 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        if (checkPresentOfResume(resume.getUuid()) != 10_000) {
-            storage[checkPresentOfResume(resume.getUuid())] = resume;
+        int k = checkPresentOfResume(resume.getUuid());
+        if (k != 10_000) {
+            storage[k] = resume;
         }
     }
 
@@ -35,17 +36,18 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        if (checkPresentOfResume(uuid) != 10_000) {
-            return storage[checkPresentOfResume(uuid)];
+        int k = checkPresentOfResume(uuid);
+        if (k != 10_000) {
+            return storage[k];
         }
         return null;
     }
 
     public void delete(String uuid) {
-        if (checkPresentOfResume(uuid) != 10_000) {
-            storage[checkPresentOfResume(uuid)].setUuid(null);
-            if (size - 1 - checkPresentOfResume(uuid) >= 0) {
-                System.arraycopy(storage, checkPresentOfResume(uuid) + 1, storage, checkPresentOfResume(uuid), size - checkPresentOfResume(uuid) - 1);
+        int k = checkPresentOfResume(uuid);
+        if (k != 10_000) {
+            if (size - 1 - k >= 0) {
+                System.arraycopy(storage, k + 1, storage, k, size - k - 1);
             }
             size--;
         }
@@ -53,6 +55,9 @@ public class ArrayStorage {
 
     private int checkPresentOfResume(String uuid) {
         for (int i = 0; i < storage.length; i++) {
+            if (storage[i] == null) {
+                break;
+            }
             if (storage[i].getUuid().equals(uuid)) {
                 System.out.println("Resume is present");
                 return i;
