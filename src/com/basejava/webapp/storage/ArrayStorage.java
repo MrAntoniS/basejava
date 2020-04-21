@@ -17,14 +17,14 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        int k = checkPresentOfResume(resume.getUuid());
-        if (k != 10_000) {
-            storage[k] = resume;
+        int index = getIndex(resume.getUuid());
+        if (index != -1) {
+            storage[index] = resume;
         }
     }
 
     public void save(Resume resume) {
-        if (checkPresentOfResume(resume.getUuid()) == 10_000) {
+        if (getIndex(resume.getUuid()) == -1) {
             System.out.println("Resume is not present");
             if (size == storage.length) {
                 System.out.println("No storage");
@@ -36,34 +36,31 @@ public class ArrayStorage {
     }
 
     public Resume get(String uuid) {
-        int k = checkPresentOfResume(uuid);
-        if (k != 10_000) {
-            return storage[k];
+        int index = getIndex(uuid);
+        if (index != -1) {
+            return storage[index];
         }
         return null;
     }
 
     public void delete(String uuid) {
-        int k = checkPresentOfResume(uuid);
-        if (k != 10_000) {
-            if (size - 1 - k >= 0) {
-                System.arraycopy(storage, k + 1, storage, k, size - k - 1);
+        int index = getIndex(uuid);
+        if (index != -1) {
+            if (size - 1 - index >= 0) {
+                System.arraycopy(storage, index + 1, storage, index, size - index - 1);
             }
             size--;
         }
     }
 
-    private int checkPresentOfResume(String uuid) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                break;
-            }
+    private int getIndex(String uuid) {
+        for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 System.out.println("Resume is present");
                 return i;
             }
         }
-        return 10_000;
+        return -1;
     }
 
     /**
