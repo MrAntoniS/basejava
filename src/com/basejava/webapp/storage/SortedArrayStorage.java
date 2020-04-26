@@ -8,8 +8,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     protected void arraySort(Resume resume) {
         int index = Arrays.binarySearch(storage, 0, size, resume);
-        int i = - (index) - 1;
-        if(i != 0) {
+        int i = -(index) - 1;
+        if (i != 0) {
             System.arraycopy(storage, i, storage, i + 1, size - i);
         }
         storage[i] = resume;
