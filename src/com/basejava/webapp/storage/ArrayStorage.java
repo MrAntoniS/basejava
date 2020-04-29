@@ -7,18 +7,24 @@ import com.basejava.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    protected void arraySort(Resume resume) {
-        storage[size] = resume;
-        size++;
-    }
-
+    @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
-                System.out.println("Resume is present");
                 return i;
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void saveResume(Resume resume, int index) {
+        storage[size] = resume;
+    }
+
+    @Override
+    protected void deleteResume(String uuid, int index) {
+        storage[index] = storage[size - 1];
+        storage[size - 1] = null;
     }
 }

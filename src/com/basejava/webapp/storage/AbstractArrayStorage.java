@@ -5,21 +5,13 @@ import com.basejava.webapp.model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage implements Storage {
-    protected static final int STORAGE_LIMIT = 10000;
+    protected static final int STORAGE_LIMIT = 10_000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
     public int size() {
         return size;
-    }
-
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index != -1) {
-            return storage[index];
-        }
-        return null;
     }
 
     public void clear() {
@@ -33,35 +25,50 @@ public abstract class AbstractArrayStorage implements Storage {
         return Arrays.copyOf(storage, size);
     }
 
+    public Resume get(String uuid) {
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            return storage[index];
+        } else {
+            System.out.println("Resume " + uuid + " is not present in storage");
+        }
+        return null;
+    }
+
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
-        if (index != -1) {
+        if (index >= 0) {
             storage[index] = resume;
+        } else {
+            System.out.println("Resume " + resume.getUuid() + " is not present in storage");
+        }
+    }
+
+    public void save(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index >= 0) {
+            System.out.println("Resume " + resume.getUuid() + " is already present");
+        } else if (size == storage.length) {
+            System.out.println("Storage is full");
+        } else {
+            saveResume(resume, index);
+            size++;
         }
     }
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index != -1) {
-            if (size - 1 - index >= 0) {
-                System.arraycopy(storage, index + 1, storage, index, size - index - 1);
-            }
+        if (index >= 0) {
+            deleteResume(uuid, index);
             size--;
+        } else {
+            System.out.println("Resume " + uuid + " is not present in storage");
         }
     }
-
-    public void save(Resume resume) {
-        if (getIndex(resume.getUuid()) <= -1) {
-            System.out.println("Resume is not present");
-            if (size == storage.length) {
-                System.out.println("No storage");
-            } else {
-                arraySort(resume);
-            }
-        }
-    }
-
-    protected abstract void arraySort(Resume resume);
 
     protected abstract int getIndex(String uuid);
+
+    protected abstract void saveResume(Resume resume, int index);
+
+    protected abstract void deleteResume(String uuid, int index);
 }
