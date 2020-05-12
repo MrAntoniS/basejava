@@ -45,11 +45,18 @@ public abstract class AbstractArrayStorageTest {
         Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
     }
 
+    @Test(expected = NotExistStorageException.class)
+    public void updateNotExist() throws Exception {
+        Resume testResume = new Resume("dummy");
+        storage.update(testResume);
+    }
+
     @Test
     public void getAll() throws Exception {
-        Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
-        Assert.assertEquals(new Resume(UUID_2), storage.get(UUID_2));
-        Assert.assertEquals(new Resume(UUID_3), storage.get(UUID_3));
+        Resume[] array = storage.getAll();
+        Assert.assertEquals(array[0], storage.get(UUID_1));
+        Assert.assertEquals(array[1], storage.get(UUID_2));
+        Assert.assertEquals(array[2], storage.get(UUID_3));
     }
 
     @Test
@@ -57,28 +64,6 @@ public abstract class AbstractArrayStorageTest {
         storage.clear();
         storage.save(new Resume(UUID_1));
         Assert.assertEquals(1, storage.size());
-    }
-
-    @Test
-    public void delete() throws Exception {
-        storage.delete(UUID_1);
-        Assert.assertEquals(2, storage.size());
-    }
-
-    @Test
-    public void get() throws Exception {
-        Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
-    }
-
-    @Test(expected = NotExistStorageException.class)
-    public void getNotExist() throws Exception {
-        storage.get("dummy");
-    }
-
-    @Test(expected = NotExistStorageException.class)
-    public void updateNotExist() throws Exception {
-        Resume testResume = new Resume("dummy");
-        storage.update(testResume);
     }
 
     @Test(expected = ExistStorageException.class)
@@ -92,11 +77,27 @@ public abstract class AbstractArrayStorageTest {
         for (i = 3; i < STORAGE_LIMIT; i++) {
             storage.save(new Resume("UUID_" + i));
         }
-            storage.save(new Resume("UUID_" + i));
+        storage.save(new Resume("UUID_" + i));
+    }
+
+    @Test
+    public void delete() throws Exception {
+        storage.delete(UUID_1);
+        Assert.assertEquals(2, storage.size());
     }
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() throws Exception {
         storage.delete("dummy");
+    }
+
+    @Test
+    public void get() throws Exception {
+        Assert.assertEquals(new Resume(UUID_1), storage.get(UUID_1));
+    }
+
+    @Test(expected = NotExistStorageException.class)
+    public void getNotExist() throws Exception {
+        storage.get("dummy");
     }
 }
