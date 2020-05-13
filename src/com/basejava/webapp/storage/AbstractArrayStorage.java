@@ -28,15 +28,15 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    protected Resume implementGet(int index) {
+    protected Resume runGet(int index) {
         return storage[index];
     }
 
-    protected void implementUpdate(int index, Resume resume) {
+    protected void runUpdate(int index, Resume resume) {
         storage[index] = resume;
     }
 
-    protected void implementSave(int index, Resume resume) {
+    protected void runSave(int index, Resume resume) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage is full", resume.getUuid());
         } else {
@@ -45,7 +45,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         }
     }
 
-    protected void implementDelete(int index) {
+    protected void runDelete(int index) {
         deleteResume(index);
         storage[size - 1] = null;
         size--;
