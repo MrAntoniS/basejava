@@ -28,25 +28,29 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    protected Resume runGet(int index) {
-        return storage[index];
+    protected boolean checkAvailability(String uuid) {
+        return getIndex(uuid) >= 0;
     }
 
-    protected void runUpdate(int index, Resume resume) {
-        storage[index] = resume;
+    protected Resume runGet(String uuid) {
+        return storage[getIndex(uuid)];
     }
 
-    protected void runSave(int index, Resume resume) {
+    protected void runUpdate(Resume resume) {
+        storage[getIndex(resume.getUuid())] = resume;
+    }
+
+    protected void runSave(Resume resume) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage is full", resume.getUuid());
         } else {
-            saveResume(resume, index);
+            saveResume(resume, getIndex(resume.getUuid()));
             size++;
         }
     }
 
-    protected void runDelete(int index) {
-        deleteResume(index);
+    protected void runDelete(String uuid) {
+        deleteResume(getIndex(uuid));
         storage[size - 1] = null;
         size--;
 

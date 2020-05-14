@@ -7,48 +7,43 @@ import com.basejava.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            return runGet(index);
+        if (checkAvailability(uuid)) {
+            return runGet(uuid);
         }
         throw new NotExistStorageException(uuid);
     }
 
     public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            runUpdate(index, resume);
+        if (checkAvailability(resume.getUuid())) {
+            runUpdate(resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     public void save(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
+        if (checkAvailability(resume.getUuid())) {
             throw new ExistStorageException(resume.getUuid());
         } else {
-            runSave(index, resume);
+            runSave(resume);
         }
     }
 
     public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            runDelete(index);
+        if (checkAvailability(uuid)) {
+            runDelete(uuid);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract boolean checkAvailability(String uuid);
 
-    protected abstract Resume runGet(int index);
+    protected abstract Resume runGet(String uuid);
 
-    protected abstract void runUpdate(int index, Resume resume);
+    protected abstract void runUpdate(Resume resume);
 
-    protected abstract void runSave(int index, Resume resume);
+    protected abstract void runSave(Resume resume);
 
-    protected abstract void runDelete(int index);
+    protected abstract void runDelete(String uuid);
 }
-

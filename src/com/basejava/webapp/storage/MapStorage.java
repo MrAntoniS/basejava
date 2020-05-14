@@ -2,12 +2,12 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ListStorage extends AbstractStorage {
+public class MapStorage extends AbstractStorage {
 
-    private List<Resume> storage = new ArrayList<>();
+    private Map<String, Resume> storage = new HashMap<String, Resume>();
 
     @Override
     public int size() {
@@ -22,36 +22,31 @@ public class ListStorage extends AbstractStorage {
     @Override
     public Resume[] getAll() {
         int i = storage.size();
-        return storage.toArray(new Resume[i]);
+        return storage.values().toArray(new Resume[i]);
     }
 
     @Override
     protected boolean checkAvailability(String uuid) {
-        return getIndex(uuid) >= 0;
+        return storage.containsKey(uuid);
     }
 
     @Override
     protected Resume runGet(String uuid) {
-        return storage.get(getIndex(uuid));
+        return storage.get(uuid);
     }
 
     @Override
     protected void runUpdate(Resume resume) {
-        storage.set(getIndex(resume.getUuid()), resume);
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
     protected void runSave(Resume resume) {
-        storage.add(resume);
+        storage.putIfAbsent(resume.getUuid(), resume);
     }
 
     @Override
     protected void runDelete(String uuid) {
-        storage.remove(getIndex(uuid));
-    }
-
-    private int getIndex(String uuid) {
-        Resume resume = new Resume(uuid);
-        return storage.indexOf(resume);
+        storage.remove(uuid);
     }
 }

@@ -3,6 +3,7 @@ package com.basejava.webapp;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.storage.ArrayStorage;
 import com.basejava.webapp.storage.ListStorage;
+import com.basejava.webapp.storage.MapStorage;
 import com.basejava.webapp.storage.SortedArrayStorage;
 
 import java.util.Arrays;
