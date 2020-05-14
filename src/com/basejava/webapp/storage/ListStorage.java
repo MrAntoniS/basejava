@@ -50,7 +50,7 @@ public class ListStorage extends AbstractStorage {
         storage.remove(getIndex(uuid));
     }
 
-    private int getIndex(String uuid) {
+    protected int getIndex(String uuid) {
         Resume resume = new Resume(uuid);
         return storage.indexOf(resume);
     }
