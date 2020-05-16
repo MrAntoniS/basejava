@@ -7,14 +7,14 @@ import com.basejava.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
-        if (checkAvailability(uuid)) {
+        if (checkAvailability(getKey(uuid))) {
             return runGet(uuid);
         }
         throw new NotExistStorageException(uuid);
     }
 
     public void update(Resume resume) {
-        if (checkAvailability(resume.getUuid())) {
+        if (checkAvailability(getKey(resume.getUuid()))) {
             runUpdate(resume);
         } else {
             throw new NotExistStorageException(resume.getUuid());
@@ -22,7 +22,7 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void save(Resume resume) {
-        if (checkAvailability(resume.getUuid())) {
+        if (checkAvailability(getKey(resume.getUuid()))) {
             throw new ExistStorageException(resume.getUuid());
         } else {
             runSave(resume);
@@ -30,14 +30,16 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void delete(String uuid) {
-        if (checkAvailability(uuid)) {
+        if (checkAvailability(getKey(uuid))) {
             runDelete(uuid);
         } else {
             throw new NotExistStorageException(uuid);
         }
     }
 
-    protected abstract boolean checkAvailability(String uuid);
+    protected abstract Object getKey(String uuid);
+
+    protected abstract boolean checkAvailability(Object key);
 
     protected abstract Resume runGet(String uuid);
 

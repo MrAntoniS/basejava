@@ -28,35 +28,39 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    protected boolean checkAvailability(String uuid) {
-        return getIndex(uuid) >= 0;
+    @Override
+    protected boolean checkAvailability(Object key) {
+        return (Integer) key >= 0;
     }
 
+    @Override
     protected Resume runGet(String uuid) {
-        return storage[getIndex(uuid)];
+        return storage[getKey(uuid)];
     }
 
+    @Override
     protected void runUpdate(Resume resume) {
-        storage[getIndex(resume.getUuid())] = resume;
+        storage[getKey(resume.getUuid())] = resume;
     }
 
+    @Override
     protected void runSave(Resume resume) {
         if (size == STORAGE_LIMIT) {
             throw new StorageException("Storage is full", resume.getUuid());
         } else {
-            saveResume(resume, getIndex(resume.getUuid()));
+            saveResume(resume, getKey(resume.getUuid()));
             size++;
         }
     }
 
+    @Override
     protected void runDelete(String uuid) {
-        deleteResume(getIndex(uuid));
+        deleteResume(getKey(uuid));
         storage[size - 1] = null;
         size--;
-
     }
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Integer getKey(String uuid);
 
     protected abstract void saveResume(Resume resume, int index);
 

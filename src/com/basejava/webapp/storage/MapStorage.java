@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
 
-    private Map<String, Resume> storage = new HashMap<String, Resume>();
+    private Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public int size() {
@@ -26,7 +26,13 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkAvailability(String uuid) {
+    protected String getKey(String uuid) {
+        return uuid;
+    }
+
+    @Override
+    protected boolean checkAvailability(Object key) {
+        String uuid = (String) key;
         return storage.containsKey(uuid);
     }
 
