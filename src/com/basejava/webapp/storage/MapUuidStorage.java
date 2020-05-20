@@ -2,12 +2,11 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class ListStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage {
 
-    private List<Resume> storage = new ArrayList<>();
+    private TreeMap<String, Resume> storage = new TreeMap<>();
 
     @Override
     public int size() {
@@ -21,42 +20,37 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return storage;
+        return (List<Resume>) new ArrayList(storage.values());
     }
 
     @Override
-    protected Integer getKey(String uuid) {
-        for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return null;
+    protected String getKey(String uuid) {
+        return uuid;
     }
 
     @Override
     protected boolean checkAvailability(Object key) {
-        return key != null;
+        String uuid = (String) key;
+        return storage.containsKey(uuid);
     }
 
     @Override
     protected Resume runGet(String uuid) {
-        return storage.get(getKey(uuid));
+        return storage.get(uuid);
     }
 
     @Override
     protected void runUpdate(Resume resume) {
-        storage.set(getKey(resume.getUuid()), resume);
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
     protected void runSave(Resume resume) {
-        storage.add(resume);
+        storage.putIfAbsent(resume.getUuid(), resume);
     }
 
     @Override
     protected void runDelete(String uuid) {
-        int index = getKey(uuid);
-        storage.remove(index);
+        storage.remove(uuid);
     }
 }

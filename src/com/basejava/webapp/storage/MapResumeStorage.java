@@ -2,12 +2,13 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
-public class MapStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage {
 
-    private Map<String, Resume> storage = new HashMap<>();
+    private TreeMap<String, Resume> storage = new TreeMap<>();
 
     @Override
     public int size() {
@@ -20,20 +21,19 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        int i = storage.size();
-        return storage.values().toArray(new Resume[i]);
+    public List<Resume> getAllSorted() {
+        return (List<Resume>) new ArrayList(storage.values());
     }
 
     @Override
-    protected String getKey(String uuid) {
-        return uuid;
+    protected Resume getKey(String uuid) {
+        return new Resume(uuid, "Anyone");
     }
 
     @Override
     protected boolean checkAvailability(Object key) {
-        String uuid = (String) key;
-        return storage.containsKey(uuid);
+        Resume resume = (Resume) key;
+        return storage.containsValue(resume);
     }
 
     @Override
