@@ -1,12 +1,10 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
@@ -14,6 +12,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
+
+    protected static final Comparator<Resume> RESUME_COMPARATOR = new Comparator<Resume>() {
+        @Override
+        public int compare(Resume resume, Resume storageResume) {
+            if (resume.getUuid().equals(storageResume.getUuid()) && resume.getFullName().equals(storageResume.getFullName())) {
+                return 0;
+            }
+            return resume.getUuid().compareTo(storageResume.getUuid());
+        }
+    };
 
     public int size() {
         return size;
@@ -27,7 +35,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     //    @return array, contains only Resumes in storage (without null)
 
     public List<Resume> getAllSorted() {
-        return Arrays.asList(Arrays.copyOf(storage, size));
+        List<Resume> newStorage = Arrays.asList(Arrays.copyOf(storage, size));
+        newStorage.sort(RESUME_COMPARATOR);
+        return newStorage;
     }
 
     @Override

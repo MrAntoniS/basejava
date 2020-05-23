@@ -7,34 +7,42 @@ import com.basejava.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public Resume get(String uuid) {
-        if (checkAvailability(getKey(uuid))) {
+        if (isExistKey(uuid)) {
             return runGet(uuid);
         }
-        throw new NotExistStorageException(uuid);
+        return null;
     }
 
     public void update(Resume resume) {
-        if (checkAvailability(getKey(resume.getUuid()))) {
+        if (isExistKey(resume.getUuid())) {
             runUpdate(resume);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     public void save(Resume resume) {
-        if (checkAvailability(getKey(resume.getUuid()))) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
+        if (isNotExistKey(resume)) {
             runSave(resume);
         }
     }
 
     public void delete(String uuid) {
-        if (checkAvailability(getKey(uuid))) {
+        if (isExistKey(uuid)) {
             runDelete(uuid);
-        } else {
+        }
+    }
+
+    public boolean isNotExistKey(Resume resume) {
+        if (checkAvailability(getKey(resume.getUuid()))) {
+            throw new ExistStorageException(resume.getUuid());
+        }
+        return true;
+    }
+
+    public boolean isExistKey(String uuid) {
+        if (!checkAvailability(getKey(uuid))) {
             throw new NotExistStorageException(uuid);
         }
+        return true;
     }
 
     protected abstract Object getKey(String uuid);

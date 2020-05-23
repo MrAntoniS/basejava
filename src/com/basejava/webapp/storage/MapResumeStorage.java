@@ -22,7 +22,7 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return (List<Resume>) new ArrayList(storage.values());
+        return new ArrayList<Resume>(storage.values());
     }
 
     @Override

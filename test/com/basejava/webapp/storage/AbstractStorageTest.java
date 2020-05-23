@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class AbstractStorageTest {
+public abstract class AbstractStorageTest {
     protected Storage storage;
 
     protected static final String UUID_1 = "uuid1";
@@ -29,9 +29,9 @@ public class AbstractStorageTest {
     @Before
     public void setUp() throws Exception {
         storage.clear();
-        storage.save(new Resume(UUID_1, FULL_NAME_1));
-        storage.save(new Resume(UUID_2, FULL_NAME_2));
         storage.save(new Resume(UUID_3, FULL_NAME_3));
+        storage.save(new Resume(UUID_2, FULL_NAME_2));
+        storage.save(new Resume(UUID_1, FULL_NAME_1));
     }
 
     @Test

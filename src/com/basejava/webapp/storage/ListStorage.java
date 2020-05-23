@@ -3,11 +3,22 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
 
     private List<Resume> storage = new ArrayList<>();
+
+    private static final Comparator<Resume> RESUME_COMPARATOR = new Comparator<Resume>() {
+        @Override
+        public int compare(Resume resume, Resume storageResume) {
+            if (resume.getUuid().equals(storageResume.getUuid()) && resume.getFullName().equals(storageResume.getFullName())) {
+                return 0;
+            }
+            return resume.getUuid().compareTo(storageResume.getUuid());
+        }
+    };
 
     @Override
     public int size() {
@@ -21,6 +32,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public List<Resume> getAllSorted() {
+        storage.sort(RESUME_COMPARATOR);
         return storage;
     }
 
