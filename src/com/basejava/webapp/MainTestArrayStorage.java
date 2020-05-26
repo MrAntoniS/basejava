@@ -7,7 +7,7 @@ import com.basejava.webapp.storage.*;
  * Test for your com.basejava.webapp.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
-    static final MapUuidStorage ARRAY_STORAGE = new MapUuidStorage();
+    static final SortedArrayStorage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1", "Name1");
