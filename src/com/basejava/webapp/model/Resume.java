@@ -1,5 +1,7 @@
 package com.basejava.webapp.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -11,9 +13,12 @@ public class Resume {
     private final String uuid;
     private final String fullName;
 
-//    public Resume() {
-//        this(UUID.randomUUID().toString());
-//    }
+    private Map<SectionType, Section> sections = new HashMap<>();
+    private final Map<ContactType, String> contacts = new HashMap<>();
+
+    public Resume(String fullName) {
+        this(UUID.randomUUID().toString(), fullName);
+    }
 
     public Resume(String uuid, String fullName) {
         this.uuid = uuid;
@@ -26,6 +31,22 @@ public class Resume {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public void setSection(SectionType sectionType, Section section) {
+        sections.put(sectionType, section);
+    }
+
+    public void setContact(ContactType contactType, String contact) {
+        contacts.put(contactType, contact);
+    }
+
+    public Section getSection(SectionType sectionType) {
+        return sections.get(sectionType);
+    }
+
+    public String getContact(ContactType contactType) {
+        return contacts.get(contactType);
     }
 
     @Override
