@@ -21,8 +21,8 @@ public class ResumeTestData {
         testResume.setContact(STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
         testResume.setContact(HOMEPAGE, "http://gkislin.ru/");
 
-        testResume.setSection(OBJECTIVE, new SectionAsString("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-        testResume.setSection(PERSONAL, new SectionAsString("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
+        testResume.setSection(OBJECTIVE, new StringSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        testResume.setSection(PERSONAL, new StringSection("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
 
         List<String> achievement = new ArrayList<>();
         achievement.add("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). " +
@@ -38,7 +38,7 @@ public class ResumeTestData {
                 "Сбор статистики сервисов и информации о состоянии через систему мониторинга Nagios. " +
                 "Реализация онлайн клиента для администрирования и мониторинга системы по JMX (Jython/ Django).");
         achievement.add("Реализация протоколов по приему платежей всех основных платежных системы России (Cyberplat, Eport, Chronopay, Сбербанк), Белоруcсии(Erip, Osmp) и Никарагуа.");
-        testResume.setSection(ACHIEVEMENT, new SectionAsStringList(achievement));
+        testResume.setSection(ACHIEVEMENT, new StringListSection(achievement));
 
         List<String> qualifications = new ArrayList<>();
         qualifications.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
@@ -58,7 +58,7 @@ public class ResumeTestData {
         qualifications.add("администрирование Hudson/Jenkins, Ant + custom task, SoapUI, JPublisher, Flyway, Nagios, iReport, OpenCmis, Bonita, pgBouncer.");
         qualifications.add("Отличное знание и опыт применения концепций ООП, SOA, шаблонов проектрирования, архитектурных шаблонов, UML, функционального программирования");
         qualifications.add("Родной русский, английский \"upper intermediate\"");
-        testResume.setSection(QUALIFICATIONS, new SectionAsStringList(qualifications));
+        testResume.setSection(QUALIFICATIONS, new StringListSection(qualifications));
 
         List<Institution> experience = new ArrayList<>();
         experience.add(new Institution("Автор проекта", "Java Online Projects", "http://javaops.ru/", YearMonth.of(2013, 10), YearMonth.now(),
@@ -71,7 +71,7 @@ public class ResumeTestData {
                         "конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), " +
                         "сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, " +
                         "Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"));
-        testResume.setSection(EXPERIENCE, new SectionAsInstitutionList(experience));
+        testResume.setSection(EXPERIENCE, new InstitutionListSection(experience));
 
         List<Institution> education = new ArrayList<>();
         education.add(new Institution("Закончил с отличием", "Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", YearMonth.of(1984, 9),
@@ -80,9 +80,39 @@ public class ResumeTestData {
                 "https://itmo.ru/ru/", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "));
         education.add(new Institution("Аспирантура (программист С, С++)", "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "https://itmo.ru/ru/", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " "));
-        testResume.setSection(EDUCATION, new SectionAsInstitutionList(education));
+        testResume.setSection(EDUCATION, new InstitutionListSection(education));
 
-        System.out.println(testResume.getContact(PHONE_NUMBER));
-        System.out.println(testResume.getSection(QUALIFICATIONS));
+        System.out.println("Телефон: " + testResume.getContact(PHONE_NUMBER));
+        System.out.println();
+
+        // Checking StringSection.class
+        AbstractSection testStringSection = testResume.getSection(PERSONAL);
+        StringSection testString = (StringSection) testStringSection;
+        System.out.println("ЛИЧНЫЕ КАЧЕСТВА:");
+        System.out.println(testString.getSection());
+        System.out.println();
+
+        // Checking StringListSection.class
+        AbstractSection testListSection = testResume.getSection(QUALIFICATIONS);
+        StringListSection testList = (StringListSection) testListSection;
+        System.out.println("КВАЛИФИКАЦИЯ:");
+        for(String field: testList.getSection()) {
+            System.out.println("- " + field);
+        }
+        System.out.println();
+
+        // Checking InstitutionListSection.class
+        AbstractSection testInstitutionSection = testResume.getSection(EDUCATION);
+        InstitutionListSection testInstitution = (InstitutionListSection) testInstitutionSection;
+        System.out.println("ОБРАЗОВАНИЕ:");
+        for(Institution inst: testInstitution.getSection()) {
+            System.out.println(inst.getHeading());
+            System.out.println(inst.getInstitutionName());
+            System.out.println(inst.getUrl());
+            System.out.println(inst.getStartDate() + " - " + inst.getFinishDate());
+            System.out.println(inst.getDescription());
+            System.out.println();
+        }
+
     }
 }

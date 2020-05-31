@@ -1,10 +1,10 @@
 package com.basejava.webapp.model;
 
-public class SectionAsString extends Section {
+public class StringSection extends AbstractSection {
 
     private final String section;
 
-    public SectionAsString(String section) {
+    public StringSection(String section) {
         this.section = section;
     }
 

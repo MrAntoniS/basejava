@@ -1,6 +1,6 @@
 package com.basejava.webapp.model;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,8 +13,8 @@ public class Resume {
     private final String uuid;
     private final String fullName;
 
-    private Map<SectionType, Section> sections = new HashMap<>();
-    private final Map<ContactType, String> contacts = new HashMap<>();
+    private final Map<SectionType, AbstractSection> sections = new EnumMap<>(SectionType.class);
+    private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -33,7 +33,7 @@ public class Resume {
         return fullName;
     }
 
-    public void setSection(SectionType sectionType, Section section) {
+    public void setSection(SectionType sectionType, AbstractSection section) {
         sections.put(sectionType, section);
     }
 
@@ -41,7 +41,7 @@ public class Resume {
         contacts.put(contactType, contact);
     }
 
-    public Section getSection(SectionType sectionType) {
+    public AbstractSection getSection(SectionType sectionType) {
         return sections.get(sectionType);
     }
 
@@ -56,12 +56,12 @@ public class Resume {
 
         Resume resume = (Resume) object;
 
-        return uuid.equals(resume.uuid);
+        return uuid.equals(resume.uuid) & fullName.equals(resume.fullName) & sections.equals(resume.sections) & contacts.equals(resume.contacts);
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return uuid.hashCode() & fullName.hashCode() & sections.hashCode() & contacts.hashCode();
     }
 
     @Override
