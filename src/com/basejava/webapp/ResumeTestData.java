@@ -61,26 +61,36 @@ public class ResumeTestData {
         testResume.setSection(QUALIFICATIONS, new StringListSection(qualifications));
 
         List<Institution> experience = new ArrayList<>();
-        experience.add(new Institution("Автор проекта", "Java Online Projects", "http://javaops.ru/", YearMonth.of(2013, 10), YearMonth.now(),
+        List<ExperienceInTheInstitution> experienceDescription1 = new ArrayList<>();
+        experienceDescription1.add(new ExperienceInTheInstitution("Автор проекта", YearMonth.of(2013, 10), YearMonth.now(),
                 "Создание, организация и проведение Java онлайн проектов и стажировок."));
-        experience.add(new Institution("Старший разработчик (backend)", "Wrike" , "https://www.wrike.com/", YearMonth.of(2014, 10), YearMonth.of(2016, 1),
+        experience.add(new Institution("Java Online Projects", "http://javaops.ru/", experienceDescription1));
+        List<ExperienceInTheInstitution> experienceDescription2 = new ArrayList<>();
+        experienceDescription2.add(new ExperienceInTheInstitution("Старший разработчик (backend)", YearMonth.of(2014, 10), YearMonth.of(2016, 1),
                 "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
                         " Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
-        experience.add(new Institution("Java архитектор", "RIT Center", "-", YearMonth.of(2012, 4), YearMonth.of(2014, 10),
+        experience.add(new Institution("Wrike", "https://www.wrike.com/", experienceDescription2));
+        List<ExperienceInTheInstitution> experienceDescription3 = new ArrayList<>();
+        experienceDescription3.add(new ExperienceInTheInstitution("Java архитектор", YearMonth.of(2012, 4), YearMonth.of(2014, 10),
                 "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), " +
                         "конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), " +
                         "сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, " +
                         "Ant, Apache Commons, Spring security, Spring MVC, Tomcat,WSO2, xcmis, OpenCmis, Bonita, Python scripting, Unix shell remote scripting via ssh tunnels, PL/Python"));
+        experience.add(new Institution("RIT Center", "-", experienceDescription3));
         testResume.setSection(EXPERIENCE, new InstitutionListSection(experience));
 
         List<Institution> education = new ArrayList<>();
-        education.add(new Institution("Закончил с отличием", "Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", YearMonth.of(1984, 9),
+        List<ExperienceInTheInstitution> experienceDescription4 = new ArrayList<>();
+        experienceDescription4.add(new ExperienceInTheInstitution("Закончил с отличием", YearMonth.of(1984, 9),
                 YearMonth.of(1987, 6), " "));
-        education.add(new Institution("Инженер (программист Fortran, C)", "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "https://itmo.ru/ru/", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "));
-        education.add(new Institution("Аспирантура (программист С, С++)", "Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "https://itmo.ru/ru/", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " "));
+        education.add(new Institution("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", experienceDescription4));
+        List<ExperienceInTheInstitution> experienceDescription5 = new ArrayList<>();
+        experienceDescription5.add(new ExperienceInTheInstitution("Инженер (программист Fortran, C)", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "));
+        experienceDescription5.add(new ExperienceInTheInstitution("Аспирантура (программист С, С++)", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " "));
+        education.add(new Institution("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
+                "https://itmo.ru/ru/", experienceDescription5));
         testResume.setSection(EDUCATION, new InstitutionListSection(education));
+
 
         System.out.println("Телефон: " + testResume.getContact(PHONE_NUMBER));
         System.out.println();
@@ -96,7 +106,7 @@ public class ResumeTestData {
         AbstractSection testListSection = testResume.getSection(QUALIFICATIONS);
         StringListSection testList = (StringListSection) testListSection;
         System.out.println("КВАЛИФИКАЦИЯ:");
-        for(String field: testList.getSection()) {
+        for (String field : testList.getSection()) {
             System.out.println("- " + field);
         }
         System.out.println();
@@ -105,12 +115,15 @@ public class ResumeTestData {
         AbstractSection testInstitutionSection = testResume.getSection(EDUCATION);
         InstitutionListSection testInstitution = (InstitutionListSection) testInstitutionSection;
         System.out.println("ОБРАЗОВАНИЕ:");
-        for(Institution inst: testInstitution.getSection()) {
-            System.out.println(inst.getHeading());
-            System.out.println(inst.getInstitutionName());
-            System.out.println(inst.getUrl());
-            System.out.println(inst.getStartDate() + " - " + inst.getFinishDate());
-            System.out.println(inst.getDescription());
+        for (Institution inst : testInstitution.getSection()) {
+            System.out.println(inst.getHomePage().getName());
+            System.out.println(inst.getHomePage().getUrl());
+
+            for(ExperienceInTheInstitution exp : inst.getExperienceDescription()) {
+                System.out.println(exp.getHeading());
+                System.out.println(exp.getStartDate() + " - " + exp.getFinishDate());
+                System.out.println(exp.getDescription());
+            }
             System.out.println();
         }
 

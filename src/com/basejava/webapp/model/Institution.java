@@ -1,45 +1,21 @@
 package com.basejava.webapp.model;
 
-import java.time.YearMonth;
+import java.util.List;
 
 public class Institution {
-    private final String heading;
-    private final String institutionName;
-    private final String url;
-    private final YearMonth startDate;
-    private final YearMonth finishDate;
-    private final String description;
+    private final Link homePage;
+    private final List<ExperienceInTheInstitution> experienceDescription;
 
-    public Institution(String heading, String institutionName, String url, YearMonth startDate, YearMonth finishDate, String description) {
-        this.heading = heading;
-        this.institutionName = institutionName;
-        this.url = url;
-        this.startDate = startDate;
-        this.finishDate = finishDate;
-        this.description = description;
+    public Institution(String institutionName, String url, List<ExperienceInTheInstitution> experienceDescription) {
+        this.homePage = new Link(institutionName, url);
+        this.experienceDescription = experienceDescription;
     }
 
-    public String getHeading() {
-        return heading;
+    public Link getHomePage() {
+        return homePage;
     }
 
-    public String getInstitutionName() {
-        return institutionName;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public YearMonth getStartDate() {
-        return startDate;
-    }
-
-    public YearMonth getFinishDate() {
-        return finishDate;
-    }
-
-    public String getDescription() {
-        return description;
+    public List<ExperienceInTheInstitution> getExperienceDescription() {
+        return experienceDescription;
     }
 }
