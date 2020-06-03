@@ -3,10 +3,9 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.model.Resume;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     private List<Resume> storage = new ArrayList<>();
 
@@ -36,7 +35,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkAvailability(Object key) {
+    protected boolean checkAvailability(Integer key) {
         return key != null;
     }
 

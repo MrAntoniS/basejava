@@ -4,7 +4,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapUuidStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage<String> {
 
     private Map<String, Resume> storage = new HashMap<>();
 
@@ -29,9 +29,8 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkAvailability(Object key) {
-        String uuid = (String) key;
-        return storage.containsKey(uuid);
+    protected boolean checkAvailability(String key) {
+        return storage.containsKey(key);
     }
 
     @Override

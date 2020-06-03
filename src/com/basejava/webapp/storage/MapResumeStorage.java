@@ -4,7 +4,7 @@ import com.basejava.webapp.model.Resume;
 
 import java.util.*;
 
-public class MapResumeStorage extends AbstractStorage {
+public class MapResumeStorage extends AbstractStorage<Resume> {
 
     private Map<String, Resume> storage = new HashMap<>();
 
@@ -29,9 +29,8 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean checkAvailability(Object key) {
-        Resume resume = (Resume) key;
-        return resume != null;
+    protected boolean checkAvailability(Resume key) {
+        return key != null;
     }
 
     @Override
