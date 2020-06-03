@@ -8,49 +8,45 @@ import java.rmi.RemoteException;
 
 public class MainFile {
     public static void main(String[] args) throws MalformedURLException, RemoteException {
-//        String filePath = ".\\.gitignore";
-//
-//        File file = new File(filePath);
-//        try {
-//            System.out.println(file.getCanonicalPath());
-//        } catch (IOException e) {
-//            throw new RuntimeException("Error", e);
-//        }
-//
-//        File dir = new File("./src/ru/javawebinar/basejava");
-//        System.out.println(dir.isDirectory());
-//        String[] list = dir.list();
-//        if (list != null) {
-//            for (String name : list) {
-//                System.out.println(name);
-//            }
-//        }
-//
-//        try (FileInputStream fis = new FileInputStream(filePath)) {
-//            System.out.println(fis.read());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        String filePath = "C:\\Users\\Антон\\Desktop\\basejava\\basejava";
+        String filePath = ".\\.gitignore";
 
-        int a = 0;
-        do {
-            File dir = new File(filePath);
-            String[] dirList = dir.list();
-            if (dirList != null) {
-                for (String s : dirList) {
-                    File newFile = new File(dir + File.separator + s);
-                    if (newFile.isFile()) {
-                        System.out.println(dir + File.separator + s);
-                    }
-                    if (newFile.isDirectory()) {
-                        System.out.println(dir + File.separator + s);
-                        filePath = newFile + File.separator + s;
-                        a = 1;
-                    }
+        File file = new File(filePath);
+        try {
+            System.out.println(file.getCanonicalPath());
+        } catch (IOException e) {
+            throw new RuntimeException("Error", e);
+        }
 
+        File dir = new File("C:\\Users\\Антон\\Desktop\\basejava\\basejava\\");
+        System.out.println(dir.isDirectory());
+        String[] list = dir.list();
+        if (list != null) {
+            for (String name : list) {
+                System.out.println(name);
+            }
+        }
+
+        try (FileInputStream fis = new FileInputStream(filePath)) {
+            System.out.println(fis.read());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String symbol = "-";
+        showDirectory(dir, symbol);
+    }
+
+    public static void showDirectory(File dir, String symbol) {
+        File[] dirList = dir.listFiles();
+        if (dirList != null) {
+            for (File file : dirList) {
+                if (file.isFile()) {
+                    System.out.println(symbol + file.getName());
+                }
+                if (file.isDirectory()) {
+                    System.out.println(symbol + file.getName());
+                    showDirectory(file, symbol + symbol);
                 }
             }
-        } while (a == 1);
+        }
     }
 }
