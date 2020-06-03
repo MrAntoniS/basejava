@@ -10,8 +10,9 @@ import static com.basejava.webapp.model.ContactType.*;
 import static com.basejava.webapp.model.SectionType.*;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Resume testResume = new Resume("Григорий Кислин");
+
+    public Resume getTestResume(String uuid) {
+        Resume testResume = new Resume(uuid, "Григорий Кислин");
 
         testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
         testResume.setContact(SKYPE, "skype:grigory.kislin");
@@ -90,8 +91,11 @@ public class ResumeTestData {
         education.add(new Institution("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "https://itmo.ru/ru/", experienceDescription5));
         testResume.setSection(EDUCATION, new InstitutionListSection(education));
+        return testResume;
+    }
+}
 
-
+/*    public static void main(String[] args) {
         System.out.println("Телефон: " + testResume.getContact(PHONE_NUMBER));
         System.out.println();
 
@@ -127,5 +131,4 @@ public class ResumeTestData {
             System.out.println();
         }
 
-    }
-}
+    }*/
