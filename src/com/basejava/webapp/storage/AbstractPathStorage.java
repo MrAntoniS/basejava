@@ -1,13 +1,10 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,39 +20,38 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     }
 
     @Override
-    protected List<Resume> getStorage() {
-
+    protected Path getSearchKey(String uuid) {
         return null;
     }
 
     @Override
-    protected Path getKey(String uuid) {
-        return null;
+    protected void doUpdate(Resume r, Path searchKey) {
+
     }
 
     @Override
-    protected boolean checkAvailability(Path key) {
+    protected boolean isExist(Path searchKey) {
         return false;
     }
 
     @Override
-    protected Resume runGet(String uuid) {
+    protected void doSave(Resume r, Path searchKey) {
+
+    }
+
+    @Override
+    protected Resume doGet(Path searchKey) {
         return null;
     }
 
     @Override
-    protected void runUpdate(Resume resume) {
+    protected void doDelete(Path searchKey) {
 
     }
 
     @Override
-    protected void runSave(Resume resume) {
-
-    }
-
-    @Override
-    protected void runDelete(String uuid) {
-
+    protected List<Resume> doCopyAll() {
+        return null;
     }
 
     @Override

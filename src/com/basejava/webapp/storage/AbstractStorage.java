@@ -4,81 +4,76 @@ import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class AbstractStorage<SK> implements Storage {
 
+    //    protected final Logger LOG = Logger.getLogger(getClass().getName());
     private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
-    protected static final Comparator<Resume> RESUME_COMPARATOR_FULL_NAME_THEN_UUID = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
+    protected abstract SK getSearchKey(String uuid);
 
-    public Resume get(String uuid) {
-        LOG.info("Get " + uuid);
-        if (isExistKey(uuid)) {
-            return runGet(uuid);
-        }
-        return null;
+    protected abstract void doUpdate(Resume r, SK searchKey);
+
+    protected abstract boolean isExist(SK searchKey);
+
+    protected abstract void doSave(Resume r, SK searchKey);
+
+    protected abstract Resume doGet(SK searchKey);
+
+    protected abstract void doDelete(SK searchKey);
+
+    protected abstract List<Resume> doCopyAll();
+
+    public void update(Resume r) {
+        LOG.info("Update " + r);
+        SK searchKey = getExistedSearchKey(r.getUuid());
+        doUpdate(r, searchKey);
     }
 
-    public void update(Resume resume) {
-        LOG.info("Update " + resume);
-        if (isExistKey(resume.getUuid())) {
-            runUpdate(resume);
-        }
-    }
-
-    public void save(Resume resume) {
-        LOG.info("Save " + resume);
-        if (isNotExistKey(resume)) {
-            runSave(resume);
-        }
+    public void save(Resume r) {
+        LOG.info("Save " + r);
+        SK searchKey = getNotExistedSearchKey(r.getUuid());
+        doSave(r, searchKey);
     }
 
     public void delete(String uuid) {
         LOG.info("Delete " + uuid);
-        if (isExistKey(uuid)) {
-            runDelete(uuid);
-        }
+        SK searchKey = getExistedSearchKey(uuid);
+        doDelete(searchKey);
     }
 
-    private boolean isNotExistKey(Resume resume) {
-        if (checkAvailability(getKey(resume.getUuid()))) {
-            LOG.warning("Resume " + resume.getUuid() + " already exist");
-            throw new ExistStorageException(resume.getUuid());
-        }
-        return true;
+    public Resume get(String uuid) {
+        LOG.info("Get " + uuid);
+        SK searchKey = getExistedSearchKey(uuid);
+        return doGet(searchKey);
     }
 
-    private boolean isExistKey(String uuid) {
-        if (!checkAvailability(getKey(uuid))) {
+    private SK getExistedSearchKey(String uuid) {
+        SK searchKey = getSearchKey(uuid);
+        if (!isExist(searchKey)) {
             LOG.warning("Resume " + uuid + " not exist");
             throw new NotExistStorageException(uuid);
         }
-        return true;
+        return searchKey;
     }
 
+    private SK getNotExistedSearchKey(String uuid) {
+        SK searchKey = getSearchKey(uuid);
+        if (isExist(searchKey)) {
+            LOG.warning("Resume " + uuid + " already exist");
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
+    }
+
+    @Override
     public List<Resume> getAllSorted() {
         LOG.info("getAllSorted");
-        List<Resume> sortedStorage = getStorage();
-        sortedStorage.sort(RESUME_COMPARATOR_FULL_NAME_THEN_UUID);
-        return sortedStorage;
+        List<Resume> list = doCopyAll();
+        Collections.sort(list);
+        return list;
     }
-
-    protected abstract List<Resume> getStorage();
-
-    protected abstract SK getKey(String uuid);
-
-    protected abstract boolean checkAvailability(SK key);
-
-    protected abstract Resume runGet(String uuid);
-
-    protected abstract void runUpdate(Resume resume);
-
-    protected abstract void runSave(Resume resume);
-
-    protected abstract void runDelete(String uuid);
 }

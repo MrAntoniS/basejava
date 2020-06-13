@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
-public class Resume implements Serializable {
+public class Resume implements Comparable<Resume>, Serializable {
 
     // Unique identifier
     private final String uuid;
@@ -68,5 +68,11 @@ public class Resume implements Serializable {
     @Override
     public String toString() {
         return uuid;
+    }
+
+    @Override
+    public int compareTo(Resume resume) {
+        int cmp = fullName.compareTo(resume.fullName);
+        return cmp != 0 ? cmp : uuid.compareTo(resume.uuid);
     }
 }
