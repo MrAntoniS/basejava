@@ -4,6 +4,8 @@ import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -45,7 +47,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     private boolean isNotExistKey(Resume resume) {
         if (checkAvailability(getKey(resume.getUuid()))) {
-            LOG.warning("Resume " + resume.getUuid() + " not exist");
+            LOG.warning("Resume " + resume.getUuid() + " already exist");
             throw new ExistStorageException(resume.getUuid());
         }
         return true;

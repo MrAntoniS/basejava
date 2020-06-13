@@ -31,7 +31,7 @@ public class MainFile {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String symbol = "-";
+        String symbol = "--";
         showDirectory(dir, symbol);
     }
 
@@ -43,8 +43,8 @@ public class MainFile {
                     System.out.println(symbol + file.getName());
                 }
                 if (file.isDirectory()) {
-                    System.out.println(symbol + file.getName());
-                    showDirectory(file, symbol + symbol);
+                    System.out.println(symbol + file.getName() + "/");
+                    showDirectory(file, symbol + "--");
                 }
             }
         }

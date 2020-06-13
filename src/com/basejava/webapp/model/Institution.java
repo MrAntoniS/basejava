@@ -1,9 +1,10 @@
 package com.basejava.webapp.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class Institution {
+public class Institution implements Serializable {
     private final Link homePage;
     private final List<Experience> experienceDescription;
 
