@@ -3,6 +3,7 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
+import java.nio.file.Path;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

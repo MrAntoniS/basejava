@@ -62,17 +62,17 @@ public class ResumeTestData {
         testResume.setSection(QUALIFICATIONS, new StringListSection(qualifications));
 
         List<Institution> experience = new ArrayList<>();
-        List<ExperienceInTheInstitution> experienceDescription1 = new ArrayList<>();
-        experienceDescription1.add(new ExperienceInTheInstitution("Автор проекта", YearMonth.of(2013, 10), YearMonth.now(),
+        List<Experience> experienceDescription1 = new ArrayList<>();
+        experienceDescription1.add(new Experience("Автор проекта", YearMonth.of(2013, 10), YearMonth.now(),
                 "Создание, организация и проведение Java онлайн проектов и стажировок."));
         experience.add(new Institution("Java Online Projects", "http://javaops.ru/", experienceDescription1));
-        List<ExperienceInTheInstitution> experienceDescription2 = new ArrayList<>();
-        experienceDescription2.add(new ExperienceInTheInstitution("Старший разработчик (backend)", YearMonth.of(2014, 10), YearMonth.of(2016, 1),
+        List<Experience> experienceDescription2 = new ArrayList<>();
+        experienceDescription2.add(new Experience("Старший разработчик (backend)", YearMonth.of(2014, 10), YearMonth.of(2016, 1),
                 "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
                         " Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO."));
         experience.add(new Institution("Wrike", "https://www.wrike.com/", experienceDescription2));
-        List<ExperienceInTheInstitution> experienceDescription3 = new ArrayList<>();
-        experienceDescription3.add(new ExperienceInTheInstitution("Java архитектор", YearMonth.of(2012, 4), YearMonth.of(2014, 10),
+        List<Experience> experienceDescription3 = new ArrayList<>();
+        experienceDescription3.add(new Experience("Java архитектор", YearMonth.of(2012, 4), YearMonth.of(2014, 10),
                 "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), " +
                         "конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), " +
                         "сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, " +
@@ -81,13 +81,13 @@ public class ResumeTestData {
         testResume.setSection(EXPERIENCE, new InstitutionListSection(experience));
 
         List<Institution> education = new ArrayList<>();
-        List<ExperienceInTheInstitution> experienceDescription4 = new ArrayList<>();
-        experienceDescription4.add(new ExperienceInTheInstitution("Закончил с отличием", YearMonth.of(1984, 9),
+        List<Experience> experienceDescription4 = new ArrayList<>();
+        experienceDescription4.add(new Experience("Закончил с отличием", YearMonth.of(1984, 9),
                 YearMonth.of(1987, 6), " "));
         education.add(new Institution("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", experienceDescription4));
-        List<ExperienceInTheInstitution> experienceDescription5 = new ArrayList<>();
-        experienceDescription5.add(new ExperienceInTheInstitution("Инженер (программист Fortran, C)", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "));
-        experienceDescription5.add(new ExperienceInTheInstitution("Аспирантура (программист С, С++)", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " "));
+        List<Experience> experienceDescription5 = new ArrayList<>();
+        experienceDescription5.add(new Experience("Инженер (программист Fortran, C)", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "));
+        experienceDescription5.add(new Experience("Аспирантура (программист С, С++)", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " "));
         education.add(new Institution("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "https://itmo.ru/ru/", experienceDescription5));
         testResume.setSection(EDUCATION, new InstitutionListSection(education));

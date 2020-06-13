@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Institution {
     private final Link homePage;
-    private final List<ExperienceInTheInstitution> experienceDescription;
+    private final List<Experience> experienceDescription;
 
-    public Institution(String institutionName, String url, List<ExperienceInTheInstitution> experienceDescription) {
+    public Institution(String institutionName, String url, List<Experience> experienceDescription) {
         this.homePage = new Link(institutionName, url);
         this.experienceDescription = experienceDescription;
     }
@@ -16,7 +16,7 @@ public class Institution {
         return homePage;
     }
 
-    public List<ExperienceInTheInstitution> getExperienceDescription() {
+    public List<Experience> getExperienceDescription() {
         return experienceDescription;
     }
 

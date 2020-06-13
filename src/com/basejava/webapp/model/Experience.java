@@ -3,13 +3,13 @@ package com.basejava.webapp.model;
 import java.time.YearMonth;
 import java.util.Objects;
 
-public class ExperienceInTheInstitution {
+public class Experience {
     private final String heading;
     private final YearMonth startDate;
     private final YearMonth finishDate;
     private final String description;
 
-    public ExperienceInTheInstitution(String heading, YearMonth startDate, YearMonth finishDate, String description) {
+    public Experience(String heading, YearMonth startDate, YearMonth finishDate, String description) {
         Objects.requireNonNull(heading, "heading must not be null");
         Objects.requireNonNull(startDate, "start date must not be null");
         Objects.requireNonNull(finishDate, "finish date must not be null");
@@ -39,7 +39,7 @@ public class ExperienceInTheInstitution {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExperienceInTheInstitution that = (ExperienceInTheInstitution) o;
+        Experience that = (Experience) o;
         return heading.equals(that.heading) &&
                 startDate.equals(that.startDate) &&
                 finishDate.equals(that.finishDate) &&
