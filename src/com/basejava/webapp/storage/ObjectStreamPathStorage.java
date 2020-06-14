@@ -11,7 +11,7 @@ public class ObjectStreamPathStorage extends AbstractPathStorage {
         super(dir);
     }
 
-    @Override
+//    @Override
     protected Resume doRead(InputStream is) throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(is)) {
             return (Resume) ois.readObject();
@@ -20,7 +20,7 @@ public class ObjectStreamPathStorage extends AbstractPathStorage {
         }
     }
 
-    @Override
+//    @Override
     protected void doWrite(Resume r, OutputStream os) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(os)) {
             oos.writeObject(r);
