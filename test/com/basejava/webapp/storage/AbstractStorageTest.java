@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -25,9 +23,6 @@ public abstract class AbstractStorageTest {
     protected static final String UUID_2 = "uuid2";
     protected static final String UUID_3 = "uuid3";
 
-//    protected static final String FULL_NAME_1 = "fullName1";
-//    protected static final String FULL_NAME_2 = "fullName2";
-//    protected static final String FULL_NAME_3 = "fullName3";
     ResumeTestData testResume = new ResumeTestData();
 
     public AbstractStorageTest(Storage storage) {

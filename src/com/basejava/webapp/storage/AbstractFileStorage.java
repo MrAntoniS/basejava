@@ -2,6 +2,8 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.strategy.SerializationStrategy;
+import com.basejava.webapp.storage.strategy.StreamSerializationStrategy;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,10 +14,6 @@ public class AbstractFileStorage extends AbstractStorage<File> {
     private File directory;
 
     private static SerializationStrategy strategy = new StreamSerializationStrategy();
-
-//    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-//
-//    protected abstract Resume doRead(InputStream is) throws IOException;
 
     protected AbstractFileStorage(File directory) {
         Objects.requireNonNull(directory, "directory must not be null");

@@ -2,6 +2,8 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.strategy.SerializationStrategy;
+import com.basejava.webapp.storage.strategy.StreamSerializationStrategy;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -10,17 +12,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AbstractPathStorage extends AbstractStorage<Path> {
     private Path directory;
 
     private static SerializationStrategy strategy = new StreamSerializationStrategy();
-
-//    protected abstract Resume doRead(InputStream is) throws IOException;
-//
-//    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
 
     protected AbstractPathStorage(String dir) {
         directory = Paths.get(dir);
