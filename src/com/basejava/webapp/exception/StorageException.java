@@ -1,19 +1,23 @@
 package com.basejava.webapp.exception;
 
 public class StorageException extends RuntimeException {
-    private final Object informationObject;
+    private final String uuid;
 
-    public StorageException(String message, Object informationObject) {
+    public StorageException(String message, String uuid) {
         super(message);
-        this.informationObject = informationObject;
+        this.uuid = uuid;
     }
 
-    public StorageException(String message, Object informationObject, Exception e) {
+    public StorageException(String message, String uuid, Exception e) {
         super(message, e);
-        this.informationObject = informationObject;
+        this.uuid = uuid;
     }
 
-    public Object getUuid() {
-        return informationObject;
+    public StorageException(String message) {
+        this(message, null);
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }

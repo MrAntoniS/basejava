@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FileStorage extends AbstractStorage<File> {
-    private File directory;
+    private final File directory;
 
     private static SerializationStrategy strategy;
 
@@ -95,7 +95,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getFilesArray() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Directory is empty: ", directory);
+            throw new StorageException("Directory is empty: " + directory);
         }
         return files;
     }

@@ -5,6 +5,6 @@ import com.basejava.webapp.storage.strategy.StreamSerializationStrategy;
 public class PathStorageTest extends AbstractStorageTest {
 
     public PathStorageTest() {
-        super(new PathStorage(DIR, new StreamSerializationStrategy()));
+        super(new PathStorage(STORAGE_DIR.getAbsolutePath(), new StreamSerializationStrategy()));
     }
 }

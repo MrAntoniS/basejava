@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
-    private Path directory;
+    private final Path directory;
 
     private static SerializationStrategy strategy;
 
@@ -93,7 +93,7 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Error getting list of directory files. Directory: ", directory, e);
+            throw new StorageException("Error getting list of directory files. Directory: " + directory);
         }
     }
 }
