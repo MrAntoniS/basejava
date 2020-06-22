@@ -1,6 +1,7 @@
 package com.basejava.webapp.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +9,12 @@ public class Institution implements Serializable {
     private final Link homePage;
     private final List<Experience> experienceDescription;
 
-    public Institution(String institutionName, String url, List<Experience> experienceDescription) {
-        this.homePage = new Link(institutionName, url);
+    public Institution(String institutionName, String url, Experience ... experienceDescription) {
+        this(new Link(institutionName, url), Arrays.asList(experienceDescription));
+    }
+
+    public Institution(Link homePage, List<Experience> experienceDescription) {
+        this.homePage = homePage;
         this.experienceDescription = experienceDescription;
     }
 
