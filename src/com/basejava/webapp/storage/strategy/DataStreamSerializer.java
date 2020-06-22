@@ -1,10 +1,12 @@
 package com.basejava.webapp.storage.strategy;
 
-import com.basejava.webapp.model.ContactType;
-import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.model.*;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
+
+import static com.basejava.webapp.model.SectionType.*;
 
 public class DataStreamSerializer implements SerializationStrategy {
 
@@ -20,7 +22,41 @@ public class DataStreamSerializer implements SerializationStrategy {
                 dos.writeUTF(entry.getValue());
             }
             // TODO implements sections
+            Map<SectionType, AbstractSection> sections = r.getSections();
+            dos.writeInt(sections.size());
+            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+                AbstractSection section = entry.getValue();
+                SectionType sectionType = entry.getKey();
+                dos.writeUTF(entry.getKey().name());
+                if (sectionType == OBJECTIVE || sectionType == PERSONAL) {
+                    dos.writeUTF(((StringSection) section).getSection());
+                }
+                if (sectionType == ACHIEVEMENT || sectionType == QUALIFICATIONS) {
+                    List<String> listSection = ((StringListSection) section).getSection();
+                    dos.writeInt(listSection.size());
+                    for (String s : listSection) {
+                        dos.writeUTF(s);
+                    }
+                }
+                if (sectionType == EXPERIENCE || sectionType == EDUCATION) {
+                    List<Institution> institutionListSection = ((InstitutionListSection) section).getSection();
+                    dos.writeInt(institutionListSection.size());
+                    for (Institution i : institutionListSection) {
+                        dos.writeUTF(i.getHomePage().getName());
+                        dos.writeUTF(i.getHomePage().getUrl());
+                        List<Experience> experience = i.getExperienceDescription();
+                        dos.writeInt(experience.size());
+                        for (Experience e : experience) {
+                            dos.writeUTF(e.getHeading());
+                            dos.writeUTF(e.getStartDate().toString());
+                            dos.writeUTF(e.getFinishDate().toString());
+                            dos.writeUTF(e.getDescription());
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     @Override
