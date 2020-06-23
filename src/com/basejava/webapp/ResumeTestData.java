@@ -76,7 +76,7 @@ public class ResumeTestData {
 
         List<Institution> education = new ArrayList<>();
         education.add(new Institution("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", new Experience("Закончил с отличием", YearMonth.of(1984, 9),
-                YearMonth.of(1987, 6), null)));
+                YearMonth.of(1987, 6), " ")));
         education.add(new Institution("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
                 "https://itmo.ru/ru/", new Experience("Инженер (программист Fortran, C)", YearMonth.of(1987, 9), YearMonth.of(1993, 7), " "),
                 new Experience("Аспирантура (программист С, С++)", YearMonth.of(1993, 9), YearMonth.of(1996, 7), " ")));

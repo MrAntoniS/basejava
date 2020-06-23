@@ -3,6 +3,8 @@ package com.basejava.webapp.storage.strategy;
 import com.basejava.webapp.model.*;
 
 import java.io.*;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +72,39 @@ public class DataStreamSerializer implements SerializationStrategy {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
             // TODO implements sections
+            int sectionSize = dis.readInt();
+            for (int i = 0; i < sectionSize; i++) {
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                if (sectionType == OBJECTIVE || sectionType == PERSONAL) {
+                    resume.setSection(sectionType, new StringSection(dis.readUTF()));
+                }
+                if (sectionType == ACHIEVEMENT || sectionType == QUALIFICATIONS) {
+                    int listSectionSize = dis.readInt();
+                    List<String> listSection = new ArrayList<>();
+                    for (int z = 0; z < listSectionSize; z++) {
+                        listSection.add(dis.readUTF());
+                    }
+                    resume.setSection(sectionType, new StringListSection(listSection));
+                }
+                if (sectionType == EXPERIENCE || sectionType == EDUCATION) {
+                    int institutionListSectionSize = dis.readInt();
+                    List<Institution> institutionListSection = new ArrayList<>();
+                    for (int z = 0; z < institutionListSectionSize; z++) {
+                        String name = dis.readUTF();
+                        String url = dis.readUTF();
+                        List<Experience> experience = new ArrayList<>();
+                        int experienceSize = dis.readInt();
+                        for (int y = 0; y < experienceSize; y++) {
+                            String heading = dis.readUTF();
+                            YearMonth startDate = YearMonth.parse(dis.readUTF());
+                            YearMonth finishDate = YearMonth.parse(dis.readUTF());
+                            String description = dis.readUTF();
+                            experience.add(new Experience(heading, startDate, finishDate, description));
+                        }
+                        institutionListSection.add(new Institution(new Link(name, url), experience));
+                    }
+                }
+            }
             return resume;
         }
     }
