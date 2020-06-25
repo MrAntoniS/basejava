@@ -6,10 +6,13 @@ public class StringSection extends AbstractSection {
 
     private static final long serialVersionUID = 1L;
 
-    private final String section;
+    private String section;
 
     public StringSection(String section) {
         this.section = section;
+    }
+
+    public StringSection() {
     }
 
     public String getSection() {
@@ -27,5 +30,12 @@ public class StringSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(section);
+    }
+
+    @Override
+    public String toString() {
+        return "StringSection{" +
+                "section='" + section + '\'' +
+                '}';
     }
 }

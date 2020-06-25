@@ -12,8 +12,8 @@ public class Institution implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Link homePage;
-    private final List<Experience> experienceDescription;
+    private Link homePage;
+    private List<Experience> experienceDescription;
 
     public Institution(String institutionName, String url, Experience ... experienceDescription) {
         this(new Link(institutionName, url), Arrays.asList(experienceDescription));
@@ -22,6 +22,9 @@ public class Institution implements Serializable {
     public Institution(Link homePage, List<Experience> experienceDescription) {
         this.homePage = homePage;
         this.experienceDescription = experienceDescription;
+    }
+
+    public Institution() {
     }
 
     public Link getHomePage() {
@@ -44,5 +47,13 @@ public class Institution implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(homePage, experienceDescription);
+    }
+
+    @Override
+    public String toString() {
+        return "Institution{" +
+                "homePage=" + homePage +
+                ", experienceDescription=" + experienceDescription +
+                '}';
     }
 }

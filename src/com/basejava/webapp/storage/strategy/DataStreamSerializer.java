@@ -3,6 +3,7 @@ package com.basejava.webapp.storage.strategy;
 import com.basejava.webapp.model.*;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,13 +97,14 @@ public class DataStreamSerializer implements SerializationStrategy {
                         int experienceSize = dis.readInt();
                         for (int y = 0; y < experienceSize; y++) {
                             String heading = dis.readUTF();
-                            YearMonth startDate = YearMonth.parse(dis.readUTF());
-                            YearMonth finishDate = YearMonth.parse(dis.readUTF());
+                            LocalDate startDate = LocalDate.parse(dis.readUTF());
+                            LocalDate finishDate = LocalDate.parse(dis.readUTF());
                             String description = dis.readUTF();
                             experience.add(new Experience(heading, startDate, finishDate, description));
                         }
                         institutionListSection.add(new Institution(new Link(name, url), experience));
                     }
+                    resume.setSection(sectionType, new InstitutionListSection(institutionListSection));
                 }
             }
             return resume;

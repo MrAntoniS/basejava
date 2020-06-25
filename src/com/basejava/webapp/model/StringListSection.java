@@ -7,10 +7,13 @@ public class StringListSection extends AbstractSection {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<String> section;
+    private List<String> section;
 
     public StringListSection(List<String> section) {
         this.section = section;
+    }
+
+    public StringListSection() {
     }
 
     public List<String> getSection() {
@@ -28,5 +31,12 @@ public class StringListSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(section);
+    }
+
+    @Override
+    public String toString() {
+        return "StringListSection{" +
+                "section=" + section +
+                '}';
     }
 }

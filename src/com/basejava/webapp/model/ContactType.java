@@ -10,7 +10,6 @@ public enum ContactType {
     HOMEPAGE("Домашняя страница");
 
 
-
     private String title;
 
     ContactType(String title) {

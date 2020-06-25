@@ -10,10 +10,13 @@ public class InstitutionListSection extends AbstractSection {
 
     private static final long serialVersionUID = 1L;
 
-    private final List<Institution> section;
+    private List<Institution> section;
 
     public InstitutionListSection(List<Institution> section) {
         this.section = section;
+    }
+
+    public InstitutionListSection() {
     }
 
     public List<Institution> getSection() {
@@ -31,5 +34,12 @@ public class InstitutionListSection extends AbstractSection {
     @Override
     public int hashCode() {
         return Objects.hash(section);
+    }
+
+    @Override
+    public String toString() {
+        return "InstitutionListSection{" +
+                "section=" + section +
+                '}';
     }
 }
