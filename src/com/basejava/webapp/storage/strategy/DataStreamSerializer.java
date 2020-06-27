@@ -4,11 +4,7 @@ import com.basejava.webapp.model.*;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.basejava.webapp.model.SectionType.*;
+import java.util.*;
 
 public class DataStreamSerializer implements SerializationStrategy {
 
@@ -17,48 +13,51 @@ public class DataStreamSerializer implements SerializationStrategy {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+            writeCollection(dos, r.getContacts().entrySet(), entry -> {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
-            }
+            });
             // TODO implements sections
-            Map<SectionType, AbstractSection> sections = r.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, AbstractSection> entry : sections.entrySet()) {
+            writeCollection(dos, r.getSections().entrySet(), entry -> {
                 AbstractSection section = entry.getValue();
                 SectionType sectionType = entry.getKey();
                 dos.writeUTF(entry.getKey().name());
-                if (sectionType == OBJECTIVE || sectionType == PERSONAL) {
-                    dos.writeUTF(((StringSection) section).getSection());
+                switch (sectionType) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        dos.writeUTF(((StringSection) section).getSection());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        writeCollection(dos, ((StringListSection) section).getSection(), dos::writeUTF);
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        writeCollection(dos, ((InstitutionListSection) section).getSection(), instListSection -> {
+                            dos.writeUTF(instListSection.getHomePage().getName());
+                            dos.writeUTF(instListSection.getHomePage().getUrl());
+                            writeCollection(dos, instListSection.getExperienceDescription(), exp -> {
+                                dos.writeUTF(exp.getHeading());
+                                dos.writeUTF(exp.getStartDate().toString());
+                                dos.writeUTF(exp.getFinishDate().toString());
+                                dos.writeUTF(exp.getDescription());
+                            });
+                        });
+                        break;
                 }
-                if (sectionType == ACHIEVEMENT || sectionType == QUALIFICATIONS) {
-                    List<String> listSection = ((StringListSection) section).getSection();
-                    dos.writeInt(listSection.size());
-                    for (String s : listSection) {
-                        dos.writeUTF(s);
-                    }
-                }
-                if (sectionType == EXPERIENCE || sectionType == EDUCATION) {
-                    List<Institution> institutionListSection = ((InstitutionListSection) section).getSection();
-                    dos.writeInt(institutionListSection.size());
-                    for (Institution i : institutionListSection) {
-                        dos.writeUTF(i.getHomePage().getName());
-                        dos.writeUTF(i.getHomePage().getUrl());
-                        List<Experience> experience = i.getExperienceDescription();
-                        dos.writeInt(experience.size());
-                        for (Experience e : experience) {
-                            dos.writeUTF(e.getHeading());
-                            dos.writeUTF(e.getStartDate().toString());
-                            dos.writeUTF(e.getFinishDate().toString());
-                            dos.writeUTF(e.getDescription());
-                        }
-                    }
-                }
-            }
+            });
         }
+    }
 
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Write<T> write) throws IOException {
+        dos.writeInt(collection.size());
+        for (T type : collection) {
+            write.accept(type);
+        }
+    }
+
+    private interface Write<T> {
+        void accept(T type) throws IOException;
     }
 
     @Override
@@ -75,38 +74,36 @@ public class DataStreamSerializer implements SerializationStrategy {
             int sectionSize = dis.readInt();
             for (int i = 0; i < sectionSize; i++) {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
-                if (sectionType == OBJECTIVE || sectionType == PERSONAL) {
-                    resume.setSection(sectionType, new StringSection(dis.readUTF()));
-                }
-                if (sectionType == ACHIEVEMENT || sectionType == QUALIFICATIONS) {
-                    int listSectionSize = dis.readInt();
-                    List<String> listSection = new ArrayList<>();
-                    for (int z = 0; z < listSectionSize; z++) {
-                        listSection.add(dis.readUTF());
-                    }
-                    resume.setSection(sectionType, new StringListSection(listSection));
-                }
-                if (sectionType == EXPERIENCE || sectionType == EDUCATION) {
-                    int institutionListSectionSize = dis.readInt();
-                    List<Institution> institutionListSection = new ArrayList<>();
-                    for (int z = 0; z < institutionListSectionSize; z++) {
-                        String name = dis.readUTF();
-                        String url = dis.readUTF();
-                        List<Experience> experience = new ArrayList<>();
-                        int experienceSize = dis.readInt();
-                        for (int y = 0; y < experienceSize; y++) {
-                            String heading = dis.readUTF();
-                            LocalDate startDate = LocalDate.parse(dis.readUTF());
-                            LocalDate finishDate = LocalDate.parse(dis.readUTF());
-                            String description = dis.readUTF();
-                            experience.add(new Experience(heading, startDate, finishDate, description));
-                        }
-                        institutionListSection.add(new Institution(new Link(name, url), experience));
-                    }
-                    resume.setSection(sectionType, new InstitutionListSection(institutionListSection));
+                switch (sectionType) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.setSection(sectionType, new StringSection(dis.readUTF()));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        resume.setSection(sectionType, new StringListSection(readCollection(dis, dis::readUTF)));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        resume.setSection(sectionType, new InstitutionListSection(readCollection(dis, () -> new Institution(new Link(dis.readUTF(), dis.readUTF()), DataStreamSerializer.this.readCollection(dis,
+                                () -> new Experience(dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF()))))));
+                        break;
                 }
             }
             return resume;
         }
+    }
+
+    private <T> List<T> readCollection(DataInputStream dis, Read<T> read) throws IOException {
+        List<T> list = new ArrayList<>();
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            list.add(read.accept());
+        }
+        return list;
+    }
+
+    private interface Read<T> {
+        T accept() throws IOException;
     }
 }

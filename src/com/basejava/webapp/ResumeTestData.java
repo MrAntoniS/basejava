@@ -2,9 +2,7 @@ package com.basejava.webapp;
 
 import com.basejava.webapp.model.*;
 
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +67,7 @@ public class ResumeTestData {
         experience.add(new Institution("Wrike", "https://www.wrike.com/", new Experience("Старший разработчик (backend)", 2014, Month.OCTOBER,
                 2016, Month.JANUARY, "Проектирование и разработка онлайн платформы управления проектами Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis)." +
                 " Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.")));
-        experience.add(new Institution("RIT Center", "-", new Experience("Java архитектор", 2012, Month.APRIL, 2014, Month.OCTOBER,
+        experience.add(new Institution("RIT Center", null, new Experience("Java архитектор", 2012, Month.APRIL, 2014, Month.OCTOBER,
                 "Организация процесса разработки системы ERP для разных окружений: релизная политика, версионирование, ведение CI (Jenkins), миграция базы (кастомизация Flyway), " +
                         "конфигурирование системы (pgBoucer, Nginx), AAA via SSO. Архитектура БД и серверной части системы. Разработка интергационных сервисов: CMIS, BPMN2, 1C (WebServices), " +
                         "сервисов общего назначения (почта, экспорт в pdf, doc, html). Интеграция Alfresco JLAN для online редактирование из браузера документов MS Office. Maven + plugin development, " +
@@ -78,10 +76,10 @@ public class ResumeTestData {
 
         List<Institution> education = new ArrayList<>();
         education.add(new Institution("Заочная физико-техническая школа при МФТИ", "http://www.school.mipt.ru/", new Experience("Закончил с отличием", 1984, Month.SEPTEMBER,
-                1987, Month.JUNE, " ")));
+                1987, Month.JUNE, null)));
         education.add(new Institution("Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики",
-                "https://itmo.ru/ru/", new Experience("Инженер (программист Fortran, C)", 1987, Month.OCTOBER, 1993, Month.JULY, " "),
-                new Experience("Аспирантура (программист С, С++)", 1993, Month.SEPTEMBER, 1996, Month.JULY, " ")));
+                "https://itmo.ru/ru/", new Experience("Инженер (программист Fortran, C)", 1987, Month.OCTOBER, 1993, Month.JULY, null),
+                new Experience("Аспирантура (программист С, С++)", 1993, Month.SEPTEMBER, 1996, Month.JULY, null)));
         testResume.setSection(EDUCATION, new InstitutionListSection(education));
         return testResume;
     }
