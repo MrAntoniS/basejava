@@ -35,7 +35,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected void doUpdate(Resume r, Path path) {
         try {
-            strategy.doWrite(r, new BufferedOutputStream(new FileOutputStream(String.valueOf(path))));
+            strategy.doWrite(r, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("File write error", path.getFileName().toString(), e);
         }
@@ -43,7 +43,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected boolean isExist(Path path) {
-        return getFilesList().anyMatch(path::equals);
+        return Files.isRegularFile(path);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Resume doGet(Path path) {
         try {
-            return strategy.doRead(new BufferedInputStream(new FileInputStream(new File(String.valueOf(path)))));
+            return strategy.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("File read error", path.getFileName().toString(), e);
         }

@@ -17,7 +17,6 @@ public class DataStreamSerializer implements SerializationStrategy {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             });
-            // TODO implements sections
             writeCollection(dos, r.getSections().entrySet(), entry -> {
                 AbstractSection section = entry.getValue();
                 SectionType sectionType = entry.getKey();
@@ -49,14 +48,14 @@ public class DataStreamSerializer implements SerializationStrategy {
         }
     }
 
-    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, Write<T> write) throws IOException {
+    private <T> void writeCollection(DataOutputStream dos, Collection<T> collection, CollectionWriter<T> collectionWriter) throws IOException {
         dos.writeInt(collection.size());
         for (T type : collection) {
-            write.accept(type);
+            collectionWriter.accept(type);
         }
     }
 
-    private interface Write<T> {
+    private interface CollectionWriter<T> {
         void accept(T type) throws IOException;
     }
 
@@ -66,13 +65,8 @@ public class DataStreamSerializer implements SerializationStrategy {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
-            // TODO implements sections
-            int sectionSize = dis.readInt();
-            for (int i = 0; i < sectionSize; i++) {
+            readResumeField(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+            readResumeField(dis, () -> {
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
                     case OBJECTIVE:
@@ -81,29 +75,41 @@ public class DataStreamSerializer implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        resume.setSection(sectionType, new StringListSection(readCollection(dis, dis::readUTF)));
+                        resume.setSection(sectionType, new StringListSection(readListCollection(dis, dis::readUTF)));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        resume.setSection(sectionType, new InstitutionListSection(readCollection(dis, () -> new Institution(new Link(dis.readUTF(), dis.readUTF()), DataStreamSerializer.this.readCollection(dis,
-                                () -> new Experience(dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF()))))));
+                        resume.setSection(sectionType, new InstitutionListSection(readListCollection(dis, () ->
+                                new Institution(new Link(dis.readUTF(), dis.readUTF()), DataStreamSerializer.this.readListCollection(dis, () ->
+                                        new Experience(dis.readUTF(), LocalDate.parse(dis.readUTF()), LocalDate.parse(dis.readUTF()), dis.readUTF()))))));
                         break;
                 }
-            }
+            });
             return resume;
         }
     }
 
-    private <T> List<T> readCollection(DataInputStream dis, Read<T> read) throws IOException {
+    private <T> List<T> readListCollection(DataInputStream dis, ListCollectionReader<T> listCollectionReader) throws IOException {
         List<T> list = new ArrayList<>();
         int size = dis.readInt();
         for (int i = 0; i < size; i++) {
-            list.add(read.accept());
+            list.add(listCollectionReader.accept());
         }
         return list;
     }
 
-    private interface Read<T> {
+    private interface ListCollectionReader<T> {
         T accept() throws IOException;
+    }
+
+    private void readResumeField(DataInputStream dis, ResumeFieldReader resumeFieldReader) throws IOException {
+        int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            resumeFieldReader.accept();
+        }
+    }
+
+    private interface ResumeFieldReader {
+        void accept() throws IOException;
     }
 }
