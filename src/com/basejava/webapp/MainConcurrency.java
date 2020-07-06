@@ -1,4 +1,4 @@
-package com.basejava.webapp.util;
+package com.basejava.webapp;
 
 import java.util.ArrayList;
 import java.util.List;
