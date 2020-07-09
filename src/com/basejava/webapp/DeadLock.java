@@ -6,34 +6,28 @@ public class DeadLock {
 
     public static void main(String[] args) {
         Thread tread0 = new Thread(() -> {
-            synchronized (LOCK_1) {
-                System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект LOCK_1");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                synchronized (LOCK_2) {
-                    System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект LOCK_2");
-                }
-            }
+            takeObject(LOCK_1, LOCK_2);
         });
 
         Thread tread1 = new Thread(() -> {
-            synchronized (LOCK_2) {
-                System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект LOCK_2");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                synchronized (LOCK_1) {
-                    System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект LOCK_1");
-                }
-            }
+            takeObject(LOCK_2, LOCK_1);
         });
 
         tread0.start();
         tread1.start();
+    }
+
+    public static void takeObject(Object obj1, Object obj2) {
+        synchronized (obj1) {
+            System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект " + obj1);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (obj2) {
+                System.out.println("Потоком " + Thread.currentThread().getName() + " захвачен обьект " + obj2);
+            }
+        }
     }
 }
