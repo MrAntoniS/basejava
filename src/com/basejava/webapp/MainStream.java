@@ -2,7 +2,6 @@ package com.basejava.webapp;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MainStream {
@@ -20,10 +19,10 @@ public class MainStream {
     }
 
     static List<Integer> oddOrEven(List<Integer> integers) {
-        return integers.stream().mapToInt(Integer::intValue).sum() % 2 == 0 ? filter(integers, s -> s % 2 == 0) : filter(integers, s -> s % 2 != 0);
+        return integers.stream().mapToInt(Integer::intValue).sum() % 2 == 0 ? filter(integers, 0) : filter(integers, 1);
     }
 
-    private static List<Integer> filter(List<Integer> integers, Predicate<Integer> predicate) {
-        return integers.stream().filter(predicate).collect(Collectors.toList());
+    private static List<Integer> filter(List<Integer> integers, int i) {
+        return integers.stream().filter(s -> s % 2 == i).collect(Collectors.toList());
     }
 }
