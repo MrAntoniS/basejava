@@ -4,6 +4,7 @@ import com.basejava.webapp.Config;
 import com.basejava.webapp.ResumeTestData;
 import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
+import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public abstract class AbstractStorageTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception{
         storage.clear();
         storage.save(testResume.getTestResume3(UUID_3));
         storage.save(testResume.getTestResume2(UUID_2));
@@ -87,7 +88,7 @@ public abstract class AbstractStorageTest {
         assertEquals(1, storage.size());
     }
 
-    @Test(expected = ExistStorageException.class)
+    @Test(expected = StorageException.class)
     public void saveExist() throws Exception {
         storage.save(testResume.getTestResume1(UUID_1));
     }

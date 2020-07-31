@@ -23,12 +23,5 @@ public class MainStream {
         int sum = integers.stream().reduce(0, Integer::sum);
         Predicate<Integer> predicate = s -> (sum % 2 == 0) == (s % 2 == 0);
         return integers.stream().filter(predicate).collect(Collectors.toList());
-//        return integers.stream().mapToInt(Integer::intValue).filter(s -> {
-//            int sum = 0;
-//            for (Integer integer : integers) {
-//                sum += integer;
-//            }
-//            return s % 2 == (sum % 2 == 0 ? 0 : 1);
-//        }).boxed().collect(Collectors.toList());
     }
 }
