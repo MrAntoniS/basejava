@@ -1,7 +1,6 @@
 package com.basejava.webapp.sql;
 
 import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.exception.StorageException;
 
 import java.sql.Connection;
@@ -15,29 +14,21 @@ public class SqlHelper {
         this.connectionFactory = connectionFactory;
     }
 
-    public void toDo(String sqlRequest, Maker maker) {
+    public void execute(String sqlRequest) {
+        execute(sqlRequest, PreparedStatement::execute);
+    }
+
+    public <T> T execute(String sqlRequest, Executor<T> executor) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(sqlRequest)) {
-            maker.make(ps);
+            return executor.toExecute(ps);
         } catch (SQLException e) {
-            throw new StorageException(e);
+//            System.out.println(e.getSQLState());
+            if(e.getSQLState().equals("23505")) {
+                throw new ExistStorageException(e);
+            } else {
+                throw new StorageException(e);
+            }
         }
-    }
-
-    public interface Maker {
-        void make(PreparedStatement ps) throws SQLException;
-    }
-
-    public <T> T toReturn(String sqlRequest, Returner<T> returner) {
-        try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sqlRequest)) {
-            return returner.toReturn(ps);
-        } catch (SQLException e) {
-            throw new StorageException(e);
-        }
-    }
-
-    public interface Returner<T> {
-        T toReturn(PreparedStatement ps) throws SQLException;
     }
 }
