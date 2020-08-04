@@ -1,6 +1,5 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.sql.SqlHelper;
@@ -50,9 +49,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
-            if(ps.executeUpdate() == 0) {
-                throw new ExistStorageException(r.getUuid());
-            }
+            ps.execute();
             return null;
         });
     }
@@ -61,7 +58,6 @@ public class SqlStorage implements Storage {
     public void delete(String uuid) {
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
-            ps.executeUpdate();
             if(ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
             }

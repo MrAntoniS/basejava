@@ -85,7 +85,7 @@ public class ResumeTestData {
     }
 
     public Resume getTestResume2(String uuid) {
-        Resume testResume = new Resume(uuid, "Григорий Кислин");
+        Resume testResume = new Resume(uuid, "Иван Иванов");
 
 //        testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
 //        testResume.setContact(SKYPE, "skype:grigory.kislin");
@@ -137,7 +137,7 @@ public class ResumeTestData {
     }
 
     public Resume getTestResume3(String uuid) {
-        Resume testResume = new Resume(uuid, "Григорий Кислин");
+        Resume testResume = new Resume(uuid, "Иван Петров");
 
 //        testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
 //        testResume.setContact(SKYPE, "skype:grigory.kislin");

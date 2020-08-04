@@ -20,9 +20,9 @@ public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected Storage storage;
 
-    protected static final String UUID_1 = "uuid1";
-    protected static final String UUID_2 = "uuid2";
-    protected static final String UUID_3 = "uuid3";
+    protected static final String UUID_1 = UUID.randomUUID().toString();
+    protected static final String UUID_2 = UUID.randomUUID().toString();
+    protected static final String UUID_3 = UUID.randomUUID().toString();
 
     ResumeTestData testResume = new ResumeTestData();
 
