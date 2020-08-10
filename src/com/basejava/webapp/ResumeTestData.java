@@ -14,8 +14,8 @@ public class ResumeTestData {
     public Resume getTestResume1(String uuid) {
         Resume testResume = new Resume(uuid, "Name 1");
 
-//        testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
-//        testResume.setContact(SKYPE, "skype:grigory.kislin");
+        testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
+        testResume.setContact(SKYPE, "skype:grigory.kislin");
 //        testResume.setContact(E_MAIL, "gkislin@yandex.ru");
 //        testResume.setContact(LINKED_IN, "https://www.linkedin.com/in/gkislin");
 //        testResume.setContact(GIT_HUB, "https://github.com/gkislin");
@@ -89,8 +89,8 @@ public class ResumeTestData {
 
 //        testResume.setContact(PHONE_NUMBER, "+7(921) 855-0482");
 //        testResume.setContact(SKYPE, "skype:grigory.kislin");
-//        testResume.setContact(E_MAIL, "gkislin@yandex.ru");
-//        testResume.setContact(LINKED_IN, "https://www.linkedin.com/in/gkislin");
+        testResume.setContact(E_MAIL, "gkislin@yandex.ru");
+        testResume.setContact(LINKED_IN, "https://www.linkedin.com/in/gkislin");
 //        testResume.setContact(GIT_HUB, "https://github.com/gkislin");
 //        testResume.setContact(STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
 //        testResume.setContact(HOMEPAGE, "http://gkislin.ru/");
@@ -143,9 +143,9 @@ public class ResumeTestData {
 //        testResume.setContact(SKYPE, "skype:grigory.kislin");
 //        testResume.setContact(E_MAIL, "gkislin@yandex.ru");
 //        testResume.setContact(LINKED_IN, "https://www.linkedin.com/in/gkislin");
-//        testResume.setContact(GIT_HUB, "https://github.com/gkislin");
-//        testResume.setContact(STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
-//        testResume.setContact(HOMEPAGE, "http://gkislin.ru/");
+        testResume.setContact(GIT_HUB, "https://github.com/gkislin");
+        testResume.setContact(STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
+        testResume.setContact(HOMEPAGE, "http://gkislin.ru/");
         return testResume;
     }
 }
