@@ -3,8 +3,8 @@ package com.basejava.webapp.sql;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public interface Executor<T> {
+public interface SqlExecutor<T> {
 
-    T toExecute(PreparedStatement ps) throws SQLException;
+    T execute(PreparedStatement ps) throws SQLException;
 
 }

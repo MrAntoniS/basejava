@@ -84,7 +84,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void save() throws Exception {
         storage.clear();
-        storage.save(testResume.getTestResume1(UUID_1));
+        Resume resume = testResume.getTestResume1(UUID_1);
+        storage.save(resume);
+        assertEquals(resume, storage.get(UUID_1));
         assertEquals(1, storage.size());
     }
 
