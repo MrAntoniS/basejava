@@ -94,15 +94,10 @@ public class SqlStorage implements Storage {
                 ps -> {
                     ResultSet rs = ps.executeQuery();
                     Map<String, Resume> resumes = new LinkedHashMap<>();
-                    Resume resume = null;
                     while (rs.next()) {
                         String uuid = rs.getString("uuid");
                         String fullName = rs.getString("full_name");
-                        if (!resumes.containsKey(uuid)) {
-                            resume = new Resume(uuid, fullName);
-                            resumes.put(uuid, resume);
-                        }
-                        getContacts(rs, resume);
+                        getContacts(rs, resumes.computeIfAbsent(uuid, r -> new Resume(uuid, fullName)));
                     }
                     return new ArrayList<>(resumes.values());
                 });
