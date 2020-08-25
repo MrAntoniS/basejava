@@ -26,10 +26,10 @@ public class SqlStorage implements Storage {
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume WHERE uuid =?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
-                    if (!rs.next()) {
-                        throw new NotExistStorageException(uuid);
-                    }
-                    resume = new Resume(uuid, rs.getString("full_name"));
+                if (!rs.next()) {
+                    throw new NotExistStorageException(uuid);
+                }
+                resume = new Resume(uuid, rs.getString("full_name"));
             }
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid =?")) {
                 ps.setString(1, uuid);
@@ -147,16 +147,20 @@ public class SqlStorage implements Storage {
     private void getSections(ResultSet rs, Resume resume) throws SQLException {
         String value = rs.getString("value");
         if (value != null) {
-            if (rs.next()) {
-                List<String> sections = new ArrayList<>();
-                while (rs.next()) {
-                    sections.add(value);
-                }
-                SectionType type = SectionType.valueOf(rs.getString("type"));
-                resume.setSection(type, new StringListSection(sections));
+            SectionType sectionType = SectionType.valueOf(rs.getString("type"));
+            switch (sectionType) {
+                case OBJECTIVE:
+                case PERSONAL:
+                    resume.setSection(sectionType, new StringSection(value));
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    List<String> sections = new ArrayList<>(Arrays.asList(value.split("\n")));
+                    resume.setSection(sectionType, new StringListSection(sections));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + sectionType);
             }
-            SectionType type = SectionType.valueOf(rs.getString("type"));
-            resume.setSection(type, new StringSection(value));
         }
     }
 
@@ -180,19 +184,27 @@ public class SqlStorage implements Storage {
                 ps.setString(3, returnSection(e));
                 ps.addBatch();
             }
+            ps.executeBatch();
         }
     }
 
     private String returnSection(Map.Entry<SectionType, AbstractSection> e) {
-        String section = "";
-        if (e.getValue().equals(new StringListSection())) {
-            StringListSection sls = (StringListSection) e.getValue();
-            List<String> list = sls.getSection();
-            section = String.join("\n", list);
-        }
-        if (e.getValue().equals(new StringSection())) {
-            StringSection s = (StringSection) e.getValue();
-            section = s.getSection();
+        SectionType sectionType = e.getKey();
+        String section;
+        switch (sectionType) {
+            case OBJECTIVE:
+            case PERSONAL:
+                StringSection s = (StringSection) e.getValue();
+                section = s.getSection();
+                break;
+            case ACHIEVEMENT:
+            case QUALIFICATIONS:
+                StringListSection sls = (StringListSection) e.getValue();
+                List<String> list = sls.getSection();
+                section = String.join("\n", list);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + sectionType);
         }
         return section;
     }
