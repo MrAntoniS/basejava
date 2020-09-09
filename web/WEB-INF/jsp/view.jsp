@@ -34,14 +34,7 @@
                 </td>
             </tr>
             <c:choose>
-                <c:when test="${type=='OBJECTIVE'}">
-                    <tr>
-                        <td>
-                            <%=((StringSection) section).getSection()%>
-                        </td>
-                    </tr>
-                </c:when>
-                <c:when test="${type=='PERSONAL'}">
+                <c:when test="${type=='OBJECTIVE' || type=='PERSONAL'}">
                     <tr>
                         <td>
                             <%=((StringSection) section).getSection()%>

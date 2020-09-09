@@ -57,7 +57,7 @@
                             <jsp:useBean id="experience" type="com.basejava.webapp.model.Experience"/>
                             <dl>
                                 <dt>Начальная дата:</dt>
-                                <dd><input type="text" name="${type}$startDate" size=15
+                                <dd><input type="text" name="${type}startDate" size=15
                                     value="<%=experience.getStartDate().toString()%>"></dd>
                             </dl>
                             <dl>

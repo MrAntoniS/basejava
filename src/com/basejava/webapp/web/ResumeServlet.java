@@ -1,8 +1,7 @@
 package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
-import com.basejava.webapp.model.ContactType;
-import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
 
 import javax.servlet.ServletConfig;
@@ -11,6 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.basejava.webapp.model.SectionType.*;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -33,6 +38,37 @@ public class ResumeServlet extends HttpServlet {
                 r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
+            }
+        }
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                if (type == OBJECTIVE || type == PERSONAL) {
+                    r.setSection(type, new StringSection(value));
+                    break;
+                }
+                if (type == ACHIEVEMENT || type == QUALIFICATIONS) {
+                    r.setSection(type, new StringListSection(Arrays.asList(value.split("\n"))));
+                    break;
+                }
+                if (type == EXPERIENCE || type == EDUCATION) {
+                    String[] values = request.getParameterValues(type.name());
+                    List<Institution> institutions = new ArrayList<>();
+                    for (String name : values) {
+                        if (name != null && name.trim().length() != 0) {
+                            String url = request.getParameter("url");
+                            String heading = request.getParameter("heading");
+                            String startDate = request.getParameter("startDate");
+                            String finishDate = request.getParameter("finishDate");
+                            String description = request.getParameter("description");
+                            institutions.add(new Institution(name, url, new Experience(heading, LocalDate.parse(startDate), LocalDate.parse(finishDate), description)));
+                        }
+                    }
+                    r.setSection(type, new InstitutionListSection(institutions));
+                    break;
+                }
+            } else {
+                r.getSections().remove(type);
             }
         }
         storage.update(r);
