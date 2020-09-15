@@ -1,4 +1,5 @@
 <%@ page import="com.basejava.webapp.model.*" %>
+<%@ page import="com.basejava.webapp.model.AbstractSection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -26,6 +27,7 @@
         </c:forEach>
         <c:forEach var="type" items="<%=SectionType.values()%>">
             <c:set var="section" value="${resume.getSection(type)}"/>
+            <jsp:useBean id="section" type="com.basejava.webapp.model.AbstractSection" scope="request"/>
             <h2><a>${type.title}</a></h2>
             <c:choose>
                 <c:when test="${type=='OBJECTIVE'}">
@@ -34,11 +36,10 @@
                 <c:when test="${type=='PERSONAL'}">
                     <textarea name='${type}' cols=82 rows=15>"${(resume.getSection(type)).getSection()}"</textarea>
                 </c:when>
-<%--                <c:when test="${type=='QUALIFICATIONS' || type=='ACHIEVEMENT'}">--%>
-<%--                    <jsp:useBean id="section" class="com.basejava.webapp.model.StringListSection" scope="request"/>--%>
-<%--                    <textarea name='${type}' cols=82--%>
-<%--                                              rows=15><%=String.join("\n", (section).getSection())%></textarea>--%>
-<%--                </c:when>--%>
+                <c:when test="${type=='QUALIFICATIONS' || type=='ACHIEVEMENT'}">
+                    <textarea name='${type}' cols=82
+                                              rows=15><%=String.join("\n", ((StringListSection)section).getSection())%></textarea>
+                </c:when>
             </c:choose>
         </c:forEach>
 
