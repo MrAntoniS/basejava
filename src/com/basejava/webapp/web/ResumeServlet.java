@@ -50,22 +50,22 @@ public class ResumeServlet extends HttpServlet {
                     case QUALIFICATIONS:
                         r.setSection(type, new StringListSection(Arrays.asList(value.split("\n"))));
                         break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        String[] values = request.getParameterValues(type.name());
-                        List<Institution> institutions = new ArrayList<>();
-                        for (String name : values) {
-                            if (name != null && name.trim().length() != 0) {
-                                String url = request.getParameter("url");
-                                String heading = request.getParameter("heading");
-                                String startDate = request.getParameter("startDate");
-                                String finishDate = request.getParameter("finishDate");
-                                String description = request.getParameter("description");
-                                institutions.add(new Institution(name, url, new Experience(heading, LocalDate.parse(startDate), LocalDate.parse(finishDate), description)));
-                            }
-                            r.setSection(type, new InstitutionListSection(institutions));
-                            break;
-                        }
+//                    case EXPERIENCE:
+//                    case EDUCATION:
+//                        String[] values = request.getParameterValues(type.name());
+//                        List<Institution> institutions = new ArrayList<>();
+//                        for (String name : values) {
+//                            if (name != null && name.trim().length() != 0) {
+//                                String url = request.getParameter("url");
+//                                String heading = request.getParameter("heading");
+//                                String startDate = request.getParameter("startDate");
+//                                String finishDate = request.getParameter("finishDate");
+//                                String description = request.getParameter("description");
+//                                institutions.add(new Institution(name, url, new Experience(heading, LocalDate.parse(startDate), LocalDate.parse(finishDate), description)));
+//                            }
+//                            r.setSection(type, new InstitutionListSection(institutions));
+//                            break;
+//                        }
                 }
             } else {
                 r.getSections().remove(type);
