@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -53,18 +54,19 @@ public class ResumeServlet extends HttpServlet {
                     case EXPERIENCE:
                     case EDUCATION:
                         String[] names = request.getParameterValues(type.name());
-                        String[] urls = request.getParameterValues("url");
+                        String[] urls = request.getParameterValues(type.name() + "url");
                         List<Institution> institutions = new ArrayList<>();
                         for (int j = 0; j < names.length; j++) {
                             if (names[j] != null && names[j].trim().length() != 0) {
                                 List<Experience> experiences = new ArrayList<>();
-                                String[] headings = request.getParameterValues("heading");
-                                String[] startDates = request.getParameterValues("startDate");
-                                String[] finishDates = request.getParameterValues("finishDate");
-                                String[] descriptions = request.getParameterValues("description");
+                                String[] headings = request.getParameterValues(type.name() + j + "heading");
+                                String[] startDates = request.getParameterValues(type.name() + j + "startDate");
+                                String[] finishDates = request.getParameterValues(type.name() + j + "finishDate");
+                                String[] descriptions = request.getParameterValues(type.name() + j + "description");
                                 for (int i = 0; i < headings.length; i++) {
                                     if (headings[i] != null && headings[i].trim().length() != 0) {
                                         experiences.add(new Experience(headings[i], LocalDate.parse(startDates[i]), LocalDate.parse(finishDates[i]), descriptions[i]));
+
                                     }
                                 }
                                 institutions.add(new Institution(new Link(names[j], urls[j]), experiences));

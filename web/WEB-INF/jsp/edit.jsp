@@ -40,7 +40,7 @@
                                               rows=15><%=String.join("\n", ((StringListSection)section).getSection())%></textarea>
                 </c:when>
                 <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
-                    <c:forEach var="institution" items="<%=((InstitutionListSection) section).getSection()%>">
+                    <c:forEach var="institution" items="<%=((InstitutionListSection) section).getSection()%>" varStatus="сounter">
                         <dl>
                             <dt>Учереждение:</dt>
                             <dd><input type="text" name='${type}' size=50 value="${institution.homePage.name}"></dd>
@@ -52,23 +52,23 @@
                         <c:forEach var="experience" items="${institution.experienceDescription}">
                             <jsp:useBean id="experience" type="com.basejava.webapp.model.Experience"/>
                             <dl>
+                                <dt>Должность:</dt>
+                                <dd><input type="text" name='${type}${сounter.index}heading' size=50
+                                           value="${experience.heading}">
+                            </dl>
+                            <dl>
                                 <dt>Начальная дата:</dt>
-                                <dd><input type="text" name="${type}startDate" size=15
+                                <dd><input type="text" name="${type}${сounter.index}startDate" size=15
                                            value="<%=experience.getStartDate().toString()%>"></dd>
                             </dl>
                             <dl>
                                 <dt>Конечная дата:</dt>
-                                <dd><input type="text" name="${type}finishDate" size=15
+                                <dd><input type="text" name="${type}${сounter.index}finishDate" size=15
                                            value="<%=experience.getFinishDate().toString()%>"></dd>
                             </dl>
                             <dl>
-                                <dt>Должность:</dt>
-                                <dd><input type="text" name='${type}heading' size=50
-                                           value="${experience.heading}">
-                            </dl>
-                            <dl>
                                 <dt>Описание:</dt>
-                                <dd><textarea name="${type}description" rows=5
+                                <dd><textarea name="${type}${сounter.index}description" rows=5
                                               cols=75>${experience.description}</textarea></dd>
                             </dl>
                             <br>
