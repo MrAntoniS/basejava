@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.Month;
+import java.util.*;
+
+import static com.basejava.webapp.model.ContactType.*;
+import static com.basejava.webapp.model.SectionType.*;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -100,6 +101,33 @@ public class ResumeServlet extends HttpServlet {
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                break;
+            case "add":
+                r = new Resume(UUID.randomUUID().toString(), "");
+
+                r.setContact(PHONE_NUMBER, "");
+                r.setContact(SKYPE, "");
+                r.setContact(E_MAIL, "");
+                r.setContact(LINKED_IN, "");
+                r.setContact(GIT_HUB, "");
+                r.setContact(STACKOVERFLOW, "");
+                r.setContact(HOMEPAGE, "");
+
+                r.setSection(OBJECTIVE, new StringSection(""));
+                r.setSection(PERSONAL, new StringSection(""));
+
+                r.setSection(ACHIEVEMENT, new StringListSection(Arrays.asList("".split("\n"))));
+                r.setSection(QUALIFICATIONS, new StringListSection(Arrays.asList("".split("\n"))));
+
+                List<Institution> experience = new ArrayList<>();
+                experience.add(new Institution("", null, new Experience("", 2020, Month.JANUARY, 2020, Month.JANUARY, "")));
+                r.setSection(EXPERIENCE, new InstitutionListSection(experience));
+
+                List<Institution> education = new ArrayList<>();
+                education.add(new Institution("", null, new Experience("", 2020, Month.JANUARY, 2020, Month.JANUARY, "")));
+                r.setSection(EDUCATION, new InstitutionListSection(education));
+
+                storage.save(r);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
