@@ -1,6 +1,7 @@
 <%@ page import="com.basejava.webapp.model.StringSection" %>
 <%@ page import="com.basejava.webapp.model.StringListSection" %>
 <%@ page import="com.basejava.webapp.model.InstitutionListSection" %>
+<%@ page import="com.basejava.webapp.util.DateUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -37,7 +38,7 @@
                 <c:when test="${type=='OBJECTIVE' || type=='PERSONAL'}">
                     <tr>
                         <td>
-                            <p><%=((StringSection) section).getSection()%></p>
+                            <%=((StringSection) section).getSection()%>
                         </td>
                     </tr>
                 </c:when>
@@ -69,8 +70,11 @@
                         <c:forEach var="expirience" items="${institution.experienceDescription}">
                             <jsp:useBean id="expirience" type="com.basejava.webapp.model.Experience"/>
                             <tr>
-                                <td><b>${expirience.heading}</b><b> c </b><b>${expirience.startDate.toString()}</b><b>
-                                    по </b><b>${expirience.finishDate.toString()}</b><br>${expirience.description}</td>
+                                <td><%=DateUtil.outputDates(expirience.getStartDate(), expirience.getFinishDate())%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>${expirience.heading}</b><br>${expirience.description}</td>
                             </tr>
                         </c:forEach>
                     </c:forEach>

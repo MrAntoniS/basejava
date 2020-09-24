@@ -3,6 +3,7 @@ package com.basejava.webapp.web;
 import com.basejava.webapp.Config;
 import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
+import com.basejava.webapp.util.DateUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
 import static com.basejava.webapp.model.ContactType.*;
@@ -30,8 +29,14 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+        boolean notExist = uuid.equals("");
+        Resume r;
+        if (notExist) {
+            r = new Resume(UUID.randomUUID().toString(), fullName);
+        } else {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -50,7 +55,14 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        r.setSection(type, new StringListSection(Arrays.asList(value.split("\n"))));
+                        List<String> list = new ArrayList<>();
+                        String[] fields = value.split("\n");
+                        for (String field : fields) {
+                            if (field.trim().length() != 0) {
+                                list.add(field);
+                            }
+                        }
+                        r.setSection(type, new StringListSection(list));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
@@ -66,7 +78,7 @@ public class ResumeServlet extends HttpServlet {
                                 String[] descriptions = request.getParameterValues(type.name() + j + "description");
                                 for (int i = 0; i < headings.length; i++) {
                                     if (headings[i] != null && headings[i].trim().length() != 0) {
-                                        experiences.add(new Experience(headings[i], LocalDate.parse(startDates[i]), LocalDate.parse(finishDates[i]), descriptions[i]));
+                                        experiences.add(new Experience(headings[i], DateUtil.parse(startDates[i]), DateUtil.parse(finishDates[i]), descriptions[i]));
 
                                     }
                                 }
@@ -80,7 +92,11 @@ public class ResumeServlet extends HttpServlet {
                 r.getSections().remove(type);
             }
         }
-        storage.update(r);
+        if (notExist) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 
@@ -99,11 +115,48 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "view":
-            case "edit":
                 r = storage.get(uuid);
                 break;
+            case "edit":
+                r = storage.get(uuid);
+                for (SectionType sectionType : new SectionType[]{OBJECTIVE, PERSONAL, ACHIEVEMENT, QUALIFICATIONS, EXPERIENCE, EDUCATION}) {
+                    switch (sectionType) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            if (r.getSection(sectionType) == null) {
+                                r.setSection(sectionType, new StringSection(""));
+                            }
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            if (r.getSection(sectionType) == null) {
+                                r.setSection(sectionType, new StringListSection(Arrays.asList("".split("\n"))));
+                            }
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            if (r.getSection(sectionType) == null) {
+                                List<Institution> institutions = new ArrayList<>();
+                                institutions.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
+                                r.setSection(sectionType, new InstitutionListSection(institutions));
+                            } else {
+                                InstitutionListSection ils = (InstitutionListSection) r.getSection(sectionType);
+                                List<Institution> institutions = ils.getSection();
+                                for (int i = 0; i < institutions.size(); i++) {
+                                    Institution inst = institutions.get(i);
+                                    if (inst.getHomePage().getName().trim().length() != 0 && i == institutions.size() - 1) {
+                                        institutions.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
+                                    }
+                                }
+                                r.setSection(sectionType, new InstitutionListSection(institutions));
+                            }
+                            break;
+                    }
+                }
+                storage.update(r);
+                break;
             case "add":
-                r = new Resume(UUID.randomUUID().toString(), "");
+                r = new Resume("", "");
 
                 r.setContact(PHONE_NUMBER, "");
                 r.setContact(SKYPE, "");
@@ -120,14 +173,12 @@ public class ResumeServlet extends HttpServlet {
                 r.setSection(QUALIFICATIONS, new StringListSection(Arrays.asList("".split("\n"))));
 
                 List<Institution> experience = new ArrayList<>();
-                experience.add(new Institution("", null, new Experience("", 2020, Month.JANUARY, 2020, Month.JANUARY, "")));
+                experience.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
                 r.setSection(EXPERIENCE, new InstitutionListSection(experience));
 
                 List<Institution> education = new ArrayList<>();
-                education.add(new Institution("", null, new Experience("", 2020, Month.JANUARY, 2020, Month.JANUARY, "")));
+                education.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
                 r.setSection(EDUCATION, new InstitutionListSection(education));
-
-                storage.save(r);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
