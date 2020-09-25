@@ -144,6 +144,13 @@ public class ResumeServlet extends HttpServlet {
                                 List<Institution> institutions = ils.getSection();
                                 for (int i = 0; i < institutions.size(); i++) {
                                     Institution inst = institutions.get(i);
+                                    if (inst.getHomePage().getName().trim().length() != 0) {
+                                        List<Experience> exp = new ArrayList<>(inst.getExperienceDescription());
+                                        Link link = inst.getHomePage();
+                                        institutions.remove(i);
+                                        exp.add(new Experience("", DateUtil.NOW, DateUtil.NOW, ""));
+                                        institutions.add(i, new Institution(link, exp));
+                                    }
                                     if (inst.getHomePage().getName().trim().length() != 0 && i == institutions.size() - 1) {
                                         institutions.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
                                     }

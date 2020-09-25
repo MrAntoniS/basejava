@@ -31,7 +31,7 @@
             <jsp:useBean id="section" type="com.basejava.webapp.model.AbstractSection"/>
             <tr>
                 <td>
-                    <h3><a name="type.name">${type.title}</a></h3>
+                    <h2><a name="type.name">${type.title}</a></h2>
                 </td>
             </tr>
             <c:choose>
