@@ -12,10 +12,12 @@ public class Institution implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Institution EMPTY = new Institution("", "", Experience.EMPTY);
+
     private Link homePage;
     private List<Experience> experienceDescription;
 
-    public Institution(String institutionName, String url, Experience ... experienceDescription) {
+    public Institution(String institutionName, String url, Experience... experienceDescription) {
         this(new Link(institutionName, url), Arrays.asList(experienceDescription));
     }
 

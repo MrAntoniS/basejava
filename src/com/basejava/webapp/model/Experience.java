@@ -18,6 +18,8 @@ public class Experience implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Experience EMPTY = new Experience();
+
     private String heading;
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate startDate;

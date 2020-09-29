@@ -1,5 +1,6 @@
 package com.basejava.webapp.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,7 +8,13 @@ public class StringListSection extends AbstractSection {
 
     private static final long serialVersionUID = 1L;
 
+    public static final StringListSection EMPTY = new StringListSection("");
+
     private List<String> section;
+
+    public StringListSection(String... items) {
+        this(Arrays.asList(items));
+    }
 
     public StringListSection(List<String> section) {
         this.section = section;

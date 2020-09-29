@@ -31,45 +31,48 @@
             <h2><a>${type.title}</a></h2>
             <c:choose>
                 <c:when test="${type=='OBJECTIVE'}">
-                    <input type="text" name='${type.name()}' size=100
+                    <input type="text" name='${type.name()}' size=75
                            value='<%=((StringSection) section).getSection()%>'>
                 </c:when>
                 <c:when test="${type=='PERSONAL'}">
-                    <textarea name='${type}' cols=82 rows=15><%=((StringSection) section).getSection()%></textarea>
+                    <textarea name='${type}' cols=75 rows=5><%=((StringSection) section).getSection()%></textarea>
                 </c:when>
                 <c:when test="${type=='QUALIFICATIONS' || type=='ACHIEVEMENT'}">
-                    <textarea name='${type}' cols=82
-                              rows=15><%=String.join("\n", ((StringListSection) section).getSection())%></textarea>
+                    <textarea name='${type}' cols=75
+                              rows=5><%=String.join("\n", ((StringListSection) section).getSection())%></textarea>
                 </c:when>
                 <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
                     <c:forEach var="institution" items="<%=((InstitutionListSection) section).getSection()%>"
                                varStatus="сounter">
                         <dl>
-                            <h3>Учереждение:</h3>
-                            <dd><input type="text" name='${type}' size=50 value="${institution.homePage.name}"></dd>
+                            <h3>Название учреждения:</h3>
+                            <dd><input type="text" name='${type}' size=100 value="${institution.homePage.name}"></dd>
                         </dl>
                         <dl>
-                            <dt>Сайт:</dt>
-                            <dd><input type="text" name='${type}url' size=30 value="${institution.homePage.url}"></dd>
+                            <dt>Сайт учреждения:</dt>
+                            <dd><input type="text" name='${type}url' size=100 value="${institution.homePage.url}"></dd>
                         </dl>
+                        <br>
                         <c:forEach var="experience" items="${institution.experienceDescription}">
                             <jsp:useBean id="experience" type="com.basejava.webapp.model.Experience"/>
-                            <dl>
+                            <dl style="margin-left: 40px">
                                 <dt>Должность:</dt>
-                                <dd><input type="text" name='${type}${сounter.index}heading' size=50
-                                           value="${experience.heading}">
+                                <dd><input type="text" name='${type}${сounter.index}heading' size=75
+                                           value="${experience.heading}"></dd>
                             </dl>
-                            <dl>
+                            <dl style="margin-left: 40px">
                                 <dt>Начальная дата:</dt>
-                                <dd><input type="text" name="${type}${сounter.index}startDate" size=15
-                                           value="<%=DateUtil.toStringDate(experience.getStartDate())%>"></dd>
+                                <dd><input type="text" name="${type}${сounter.index}startDate" size=10
+                                           value="<%=DateUtil.format(experience.getStartDate())%>"
+                                           placeholder="MM/yyyy"></dd>
                             </dl>
-                            <dl>
+                            <dl style="margin-left: 40px">
                                 <dt>Конечная дата:</dt>
-                                <dd><input type="text" name="${type}${сounter.index}finishDate" size=15
-                                           value="<%=DateUtil.toStringDate(experience.getFinishDate())%>"></dd>
+                                <dd><input type="text" name="${type}${сounter.index}finishDate" size=10
+                                           value="<%=DateUtil.format(experience.getFinishDate())%>"
+                                           placeholder="MM/yyyy"></dd>
                             </dl>
-                            <dl>
+                            <dl style="margin-left: 40px">
                                 <dt>Описание:</dt>
                                 <dd><textarea name="${type}${сounter.index}description" rows=5
                                               cols=75>${experience.description}</textarea></dd>
@@ -80,7 +83,6 @@
                 </c:when>
             </c:choose>
         </c:forEach>
-
         <button type="submit">Сохранить</button>
         <button type="button" onclick="window.history.back()">Отменить</button>
     </form>

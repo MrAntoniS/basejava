@@ -4,6 +4,7 @@ import com.basejava.webapp.Config;
 import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
 import com.basejava.webapp.util.DateUtil;
+import com.basejava.webapp.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -12,9 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-
-import static com.basejava.webapp.model.ContactType.*;
-import static com.basejava.webapp.model.SectionType.*;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -29,25 +27,29 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        boolean notExist = uuid.equals("");
+
+        final boolean isCreate = (uuid == null || uuid.length() == 0);
         Resume r;
-        if (notExist) {
-            r = new Resume(UUID.randomUUID().toString(), fullName);
+        if (isCreate) {
+            r = new Resume(fullName);
         } else {
             r = storage.get(uuid);
             r.setFullName(fullName);
         }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
-                r.setContact(type, value);
-            } else {
+            if (HtmlUtil.isEmpty(value)) {
                 r.getContacts().remove(type);
+            } else {
+                r.setContact(type, value);
             }
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim().length() != 0) {
+            String[] values = request.getParameterValues(type.name());
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+                r.getSections().remove(type);
+            } else {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
@@ -66,33 +68,31 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        String[] names = request.getParameterValues(type.name());
                         String[] urls = request.getParameterValues(type.name() + "url");
                         List<Institution> institutions = new ArrayList<>();
-                        for (int j = 0; j < names.length; j++) {
-                            if (names[j] != null && names[j].trim().length() != 0) {
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            if (!HtmlUtil.isEmpty(name)) {
                                 List<Experience> experiences = new ArrayList<>();
-                                String[] headings = request.getParameterValues(type.name() + j + "heading");
-                                String[] startDates = request.getParameterValues(type.name() + j + "startDate");
-                                String[] finishDates = request.getParameterValues(type.name() + j + "finishDate");
-                                String[] descriptions = request.getParameterValues(type.name() + j + "description");
-                                for (int i = 0; i < headings.length; i++) {
-                                    if (headings[i] != null && headings[i].trim().length() != 0) {
-                                        experiences.add(new Experience(headings[i], DateUtil.parse(startDates[i]), DateUtil.parse(finishDates[i]), descriptions[i]));
+                                String[] headings = request.getParameterValues(type.name() + i + "heading");
+                                String[] startDates = request.getParameterValues(type.name() + i + "startDate");
+                                String[] finishDates = request.getParameterValues(type.name() + i + "finishDate");
+                                String[] descriptions = request.getParameterValues(type.name() + i + "description");
+                                for (int j = 0; j < headings.length; j++) {
+                                    if (!HtmlUtil.isEmpty(headings[j])) {
+                                        experiences.add(new Experience(headings[j], DateUtil.parse(startDates[j]), DateUtil.parse(finishDates[j]), descriptions[j]));
 
                                     }
                                 }
-                                institutions.add(new Institution(new Link(names[j], urls[j]), experiences));
+                                institutions.add(new Institution(new Link(name, urls[i]), experiences));
                             }
                         }
                         r.setSection(type, new InstitutionListSection(institutions));
                         break;
                 }
-            } else {
-                r.getSections().remove(type);
             }
         }
-        if (notExist) {
+        if (isCreate) {
             storage.save(r);
         } else {
             storage.update(r);
@@ -117,75 +117,44 @@ public class ResumeServlet extends HttpServlet {
             case "view":
                 r = storage.get(uuid);
                 break;
+            case "add":
+                r = Resume.EMPTY;
+                break;
             case "edit":
                 r = storage.get(uuid);
-                for (SectionType sectionType : new SectionType[]{OBJECTIVE, PERSONAL, ACHIEVEMENT, QUALIFICATIONS, EXPERIENCE, EDUCATION}) {
-                    switch (sectionType) {
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = r.getSection(type);
+                    switch (type) {
                         case OBJECTIVE:
                         case PERSONAL:
-                            if (r.getSection(sectionType) == null) {
-                                r.setSection(sectionType, new StringSection(""));
+                            if (section == null) {
+                                section = StringSection.EMPTY;
                             }
                             break;
                         case ACHIEVEMENT:
                         case QUALIFICATIONS:
-                            if (r.getSection(sectionType) == null) {
-                                r.setSection(sectionType, new StringListSection(Arrays.asList("".split("\n"))));
+                            if (section == null) {
+                                section = StringListSection.EMPTY;
                             }
                             break;
                         case EXPERIENCE:
                         case EDUCATION:
-                            if (r.getSection(sectionType) == null) {
-                                List<Institution> institutions = new ArrayList<>();
-                                institutions.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
-                                r.setSection(sectionType, new InstitutionListSection(institutions));
-                            } else {
-                                InstitutionListSection ils = (InstitutionListSection) r.getSection(sectionType);
-                                List<Institution> institutions = ils.getSection();
-                                for (int i = 0; i < institutions.size(); i++) {
-                                    Institution inst = institutions.get(i);
-                                    if (inst.getHomePage().getName().trim().length() != 0) {
-                                        List<Experience> exp = new ArrayList<>(inst.getExperienceDescription());
-                                        Link link = inst.getHomePage();
-                                        institutions.remove(i);
-                                        exp.add(new Experience("", DateUtil.NOW, DateUtil.NOW, ""));
-                                        institutions.add(i, new Institution(link, exp));
-                                    }
-                                    if (inst.getHomePage().getName().trim().length() != 0 && i == institutions.size() - 1) {
-                                        institutions.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
-                                    }
+                            InstitutionListSection instSection = (InstitutionListSection) section;
+                            List<Institution> emptyFirstInstitutions = new ArrayList<>();
+                            emptyFirstInstitutions.add(Institution.EMPTY);
+                            if (instSection != null) {
+                                for (Institution inst : instSection.getSection()) {
+                                    List<Experience> emptyFirstExperience = new ArrayList<>();
+                                    emptyFirstExperience.add(Experience.EMPTY);
+                                    emptyFirstExperience.addAll(inst.getExperienceDescription());
+                                    emptyFirstInstitutions.add(new Institution(inst.getHomePage(), emptyFirstExperience));
                                 }
-                                r.setSection(sectionType, new InstitutionListSection(institutions));
                             }
+                            section = new InstitutionListSection(emptyFirstInstitutions);
                             break;
                     }
+                    r.setSection(type, section);
                 }
-                storage.update(r);
-                break;
-            case "add":
-                r = new Resume("", "");
-
-                r.setContact(PHONE_NUMBER, "");
-                r.setContact(SKYPE, "");
-                r.setContact(E_MAIL, "");
-                r.setContact(LINKED_IN, "");
-                r.setContact(GIT_HUB, "");
-                r.setContact(STACKOVERFLOW, "");
-                r.setContact(HOMEPAGE, "");
-
-                r.setSection(OBJECTIVE, new StringSection(""));
-                r.setSection(PERSONAL, new StringSection(""));
-
-                r.setSection(ACHIEVEMENT, new StringListSection(Arrays.asList("".split("\n"))));
-                r.setSection(QUALIFICATIONS, new StringListSection(Arrays.asList("".split("\n"))));
-
-                List<Institution> experience = new ArrayList<>();
-                experience.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
-                r.setSection(EXPERIENCE, new InstitutionListSection(experience));
-
-                List<Institution> education = new ArrayList<>();
-                education.add(new Institution("", null, new Experience("", DateUtil.NOW, DateUtil.NOW, "")));
-                r.setSection(EDUCATION, new InstitutionListSection(education));
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");

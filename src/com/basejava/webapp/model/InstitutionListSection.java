@@ -2,6 +2,7 @@ package com.basejava.webapp.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,10 @@ public class InstitutionListSection extends AbstractSection {
 
     public InstitutionListSection(List<Institution> section) {
         this.section = section;
+    }
+
+    public InstitutionListSection(Institution... institutions) {
+        this(Arrays.asList(institutions));
     }
 
     public InstitutionListSection() {
