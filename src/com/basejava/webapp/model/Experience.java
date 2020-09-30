@@ -45,7 +45,7 @@ public class Experience implements Serializable {
         this.heading = heading;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.description = Objects.requireNonNullElse(description, " ");
+        this.description = description == null ? "" : description;
     }
 
     public String getHeading() {
